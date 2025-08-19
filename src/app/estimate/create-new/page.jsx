@@ -43,9 +43,9 @@ export default function CreateEstimate() {
           </div>
           {/* Card starts from here */}
           <div className="card w-full px-15 pt-5 mt-5 bg-base-100 card-md shadow-sm">
-            <div className="card-body">
+            <div className="card-body w-[70%]">
               {/* grid starts */}
-              <div className="grid grid-cols-12 gap-6 w-[70%]">
+              <div className="grid grid-cols-12 gap-6">
                 <div className='col-span-6'>
                   <label className="input w-[90%]">
                     <span className="label">Customer Name</span>
@@ -84,10 +84,10 @@ export default function CreateEstimate() {
 
                 <div className="col-span-8"></div>
 
-                
-
+                {/* Item Table Starts */}
                 <div className="col-span-12 mt-8" id='item-table'>
                   <h3 className='text-lg text-center border-t-2 border-b-2 py-2'>Item Table</h3>
+
                   <table className="min-w-full border border-collapse border-blue-400 text-lg mt-4">
                     <thead className='bg-blue-950'>
                       <tr className='text-base'>
@@ -139,28 +139,49 @@ export default function CreateEstimate() {
                         <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' defaultValue="0.00" readOnly/>
                         </td>
 
-                        <td>
+                        <td className='align-top pt-3'>
                           <button className="btn btn-ghost" onClick={addRow}>X</button>
-                          <button className="btn btn-ghost">X</button>
+                          <button className="btn btn-ghost">:</button>
                         </td>
 
                       </tr>
                     </tbody>
                   </table>
-                </div>
-              {/* grid ends here */}
-              </div>
-              {/* Item Teable Starts */}
-
-              <div>
-
-              </div>
-
+                </div> {/* table ends here */}
+              
+              </div> {/* grid ends here */}
+              
               <div className="justify-start card-actions mt-5">
                 <button className="btn btn-primary" onClick={addRow}>Add Row</button>
               </div>
+
+            <div className="grid grid-cols-12 gap-6">
+
+              <div className="col-span-7"></div>
+              <div className="col-span-5 bg-gray-700 text-white rounded-xl p-3">
+                <div className="grid grid-cols-2">
+                <div className='text-start text-xl font-medium ps-4 py-2'>Sub Total</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className='text-start text-xl font-medium ps-4 py-2'>Discount</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className='text-start text-lg font-medium ps-4 py-2'>CGST</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className='text-start text-lg font-medium ps-4 py-2'>SGST</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className='text-start text-xl font-medium ps-4 py-2'>Total</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className='text-start text-xl font-medium ps-4 py-2'>Advance</div>
+                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+
+                </div>
+              </div>
+              <div className="col-span-6"></div>
+              <div className="col-span-6"></div>
+              <div className="col-span-6"></div>
+
             </div>
-          </div>
+            </div> {/* Card body div ends here */}
+          </div> {/* Card div ends here */}
 
 
         {/* body div ends */}
