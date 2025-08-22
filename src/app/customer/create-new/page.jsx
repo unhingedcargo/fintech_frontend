@@ -1,13 +1,40 @@
 "use client"
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 
 export default function NewCustomer() {
+  const [gstStatus, setGSTStatus] = useState(false);
+  const [customer, setCustomer] = useState({
+    "acc_type" : "Sales",
+    "type_of_contact" : "Customer",
+    "company_name" : "",
+    "name" : "",
+    "display_name" : "",
+    "contact" : "",
+    "alt_contact" : "",
+    "email" : "",
+    "taxable" : false,
+    "gstin" : "",
+    "opening_balance" : 0.0
+  });
 
-  const getData = () => {
-    console.log("Create Button Clicked");
+  const handleGSTStatus = (e) => {
+    // let gstInput = document.getElementById("gstInput")
+    setGSTStatus(e.target.checked);
+    // e.target.checked?
+    
   }
+
+  // const handleGSTInput = (e) => {
+  //   gstStatus?null:setCustomer((prev) => ({...prev, "gstin":""}))
+  // }
+
+  const saveCustomer = () => {
+    console.log(customer);
+  }
+
+
 
   return (
     <>
@@ -41,65 +68,106 @@ export default function NewCustomer() {
                 </tr>
               </tbody>
             </table> */}
-          <div className="grid grid-cols-2 gap-8 w-[50%] mt-5">
-              <div>
-                <label className="input">
-                  <span className="label">Name</span>
-                  <input tabIndex={0} type="text" placeholder="Customer" required/>
-                </label>
-              </div>
-              
-              <div>
-                <label className="input">
-                  <span className="label">Display Name</span>
-                  <input type="text" placeholder="Display Name" required />
-                </label>
-              </div>
-              
-              <div>
-                <label className="input">
-                  <span className="label">Contact No.</span>
-                  <input type="text" placeholder="XXXXX-XXXXX" required />
-                </label>
-              </div>
-              
-              <div>
-                <label className="input validator">
-                  <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <g
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                    </g>
-                  </svg>
-                  <input type="email" placeholder="mail@email.com" required />
-                </label>
-                <div className="validator-hint hidden">Enter valid email address</div>
-              </div>
+          
+            <div className="grid grid-cols-2 gap-8 mt-5">
+                <div className='col-span-2'>
+                  <label className="input w-[45%]">
+                    <span className="label">Company Name</span>
+                    <input tabIndex={0} type="text" placeholder="Comapany Name"
+                    onChange={(e) => setCustomer((prev) => ({...prev, "company_name":e.target.value}))}/>
+                  </label>
+                </div>
+                
+                <div className='col-span-2'>
+                  <label className="input w-[50%]">
+                    <span className="label">Name</span>
+                    <input tabIndex={0} type="text" placeholder="Customer"
+                    onChange={(e) => setCustomer((prev) => ({...prev, "name":e.target.value}))}/>
+                  </label>
+                </div>
+                
+                <div className='col-span-2'>
+                  <label className="input w-[50%]">
+                    <span className="label">Display Name</span>
+                    <input type="text" placeholder="Display Name" 
+                    onChange={(e) => setCustomer((prev) => ({...prev, "display_name":e.target.value}))}/>
+                  </label>
+                </div>
+                
+                <div>
+                  <label className="input w-[50%]">
+                    <span className="label">Contact No.</span>
+                    <input type="text" placeholder="XXXXX-XXXXX" 
+                    onChange={(e) => setCustomer((prev) => ({...prev, "contact":e.target.value}))}/>
+                  </label>
+                </div>
+                <div>
+                  <label className="input w-[60%]">
+                    <span className="label">Alternate Contact No.</span>
+                    <input type="text" placeholder="XXXXX-XXXXX" 
+                    onChange={(e) => setCustomer((prev) => ({...prev, "alt_contact":e.target.value}))}/>
+                  </label>
+                </div>
+                
+                <div className='col-span-2'>
+                  <label className="input validator w-[50%]">
+                    <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <g
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2.5"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                      </g>
+                    </svg>
+                    <input type="email" placeholder="mail@email.com" 
+                    onChange={(e) => setCustomer((prev) => ({...prev, "email":e.target.value}))}/>
+                  </label>
+                  <div className="validator-hint hidden">Enter valid email address</div>
+                </div>
+                
+                <div className='col-span-2 -mb-7'>
+                  <p className='text-sm'>*Check to enable GST Status (Registered or Not Registered)</p>
+                </div>
 
-              <div>
-                <label className="input">
-                  <span className="label">GSTIN</span>
-                  <input type="text" placeholder="99ABCDE9999F1ZX" />
-                </label>
-              </div>
+                <div>
+                  <label className="input w-[50%]">
+                    {/* <span className="label">GSTIN</span> */}
+                    <span className='label'>
+                      <label className="swap pe-4">
+                        <input type="checkbox" checked={gstStatus} onChange={handleGSTStatus}/>
+                        <div className="swap-on bg-green-400 rounded-lg text-black font-bold py-2 px-4">GST Registered</div>
+                        <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
+                      </label>
+                    </span>
+                    <input type="text" placeholder="99ABCDE9999F1ZX" disabled={!gstStatus}
+                     />
+                  </label>
+                </div>
 
-              <div></div>
+                <div></div>
+                {/* <div></div> */}
 
-              <div>
-                <button className='btn btn-wide btn-outline btn-success' onClick={getData}>Create</button>
-                <button className='btn btn-ouline ms-4'>Cancel</button>
-              </div>
+                <div className='col-span-2'>
+                  <label className="input w-[30%]">
+                    <span className="label">Opening Balance</span>
+                    <input type="text" defaultValue={0.00} 
+                    onChange={(e) => setCustomer((prev) => ({...prev, "opening_balance":e.target.value}))}/>
+                  </label>
+                </div>
+
+                <div>
+                  <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
+                  <button className='btn btn-ouline ms-4' onClick={()=>{window.location.reload()}}>Cancel</button>
+                </div>
 
 
 
-              {/* This is main body of the input form */}
-          </div>
+                {/* This is main body of the input form */}
+            </div>
             
         </div>
       </div>

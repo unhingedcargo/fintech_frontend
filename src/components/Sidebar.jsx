@@ -16,7 +16,7 @@ export default function Sidebar() {
         // Conditional class based on isOpen 
         // state to control width and visibility
         className={`bg-gray-900 text-white 
-                    fixed w-[12%] h-screen transition-all overflow-y-auto
+                    fixed w-[10%] h-screen transition-all overflow-y-auto
                     duration-300 z-10`}>
         {/* Sidebar content */}
         <div className="flex flex-col items-start ps-5">

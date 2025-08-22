@@ -49,9 +49,10 @@ export default function EstimatePage() {
             <thead className='bg-blue-950'>
               <tr className=''>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[5%]'>#</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[15%]'>Date</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Estimate No.</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Date</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[20%]'>Customer</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[20%]'>Contact</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[15%]'>Contact</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Value</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Outstanding</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Status</th>
@@ -61,9 +62,10 @@ export default function EstimatePage() {
             </thead>
             <tbody>
               {estimates.map((row,index) => (
-                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimates/${row.jobno}`)}>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%]'>{index+1}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[15%] text-center'>{row.job_date}</td>
+                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimate/${row.jobno}`)}>
+                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>{index+1}</td>
+                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
+                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.job_date}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.cust_id}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.cust_id}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>{row.grandtotal}</td>

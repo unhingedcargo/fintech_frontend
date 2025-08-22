@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '@/components/Sidebar';
 import { MdKeyboardBackspace } from "react-icons/md";
 import DatePicker from 'react-datepicker';
@@ -8,24 +8,68 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 
 export default function CreateEstimate() {
-
   const [selectDate, setDate] = useState(new Date());
+  const [jobno, setJobno] = useState("");
+  const [custID, setCustID] = useState("");
+  const [grandtotal, setgrandtotal] = useState();
+  const [advance, setAdvance] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
+  useEffect(() => {
+    const URI = "http://localhost:8000/api/nextjobno"
+    const nextjob = async () => {
+      try{
+        const res = await fetch(URI);
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setJobno(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    nextjob();
+  }, [])
+
+  const [orders, setOrders] = useState([
+    { id: Date.now(), item: "", desc: "", qty: 1, rate: 0, tax_rate: 0 },
+  ]);
+
+
+// Handle input changes
+  const handleOrderChange = (id, field, value) => {
+    setOrders(
+      orders.map((order) =>
+        order.id === id ? { ...order, [field]: value } : order
+      )
+    );
+  };
+
+  // Add new row
   const addRow = () => {
-    let table = document.getElementById('item-table');
-    const lastRow = table.querySelector('tbody tr:last-child');
-    const newRow = document.createElement('tr');
+    setOrders([
+      ...orders,
+      { id: Date.now(), item: "", desc: "", qty: 1, rate: 0, tax_rate: 0 },
+    ]);
+  };
+//   const addNewRow = () => {
+//     let table = document.getElementById('item-table');
+//     const lastRow = table.querySelector('tbody tr:last-child');
+//     const newRow = document.createElement('tr');
 
-    newRow.innerHTML = lastRow.innerHTML;
+//     newRow.innerHTML = lastRow.innerHTML;
 
-    table.querySelector('tbody').appendChild(newRow);
+//     table.querySelector('tbody').appendChild(newRow);
 
-    console.log(newRow.innerHTML)
-}
+// }
 
-  // const deleteRow = () => {
+   // Delete row by id
+  const deleteRow = (id) => {
+    setOrders(orders.filter((order) => order.id !== id));
+  };
 
-  // }
+  const clearAll = () => {
+    window.location.reload();
+  };
 
 
 
@@ -43,7 +87,7 @@ export default function CreateEstimate() {
           </div>
           {/* Card starts from here */}
           <div className="card w-full px-15 pt-5 mt-5 bg-base-100 card-md shadow-sm">
-            <div className="card-body w-[70%]">
+            <div className="card-body w-[80%]">
               {/* grid starts */}
               <div className="grid grid-cols-12 gap-6">
                 <div className='col-span-6'>
@@ -63,7 +107,7 @@ export default function CreateEstimate() {
                 <div className="col-span-4 mt-5">
                   <label className="input w-[90%]">
                     <span className="label">Estimate Number</span>
-                    <input type="text" maxLength={5}/>
+                    <input type="text" maxLength={5} value={jobno} readOnly/>
                   </label>
                 </div>
 
@@ -85,10 +129,10 @@ export default function CreateEstimate() {
                 <div className="col-span-8"></div>
 
                 {/* Item Table Starts */}
-                <div className="col-span-12 mt-8" id='item-table'>
+                <div className="col-span-12 mt-8">
                   <h3 className='text-lg text-center border-t-2 border-b-2 py-2'>Item Table</h3>
 
-                  <table className="min-w-full border border-collapse border-blue-400 text-lg mt-4">
+                  <table className="min-w-full border border-collapse border-blue-400 text-lg mt-4" id='item-table'>
                     <thead className='bg-blue-950'>
                       <tr className='text-base'>
                         {/* <th className='border-2 border-blue-400 px-4 py-3 font-normal w-[02%]'>#</th> */}
@@ -101,10 +145,12 @@ export default function CreateEstimate() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className='text-base' id='item-row'>
+                      {orders.map((order) => (
+                      <tr className='text-base' key={order.id}>
                         {/* <td className='border-2 border-blue-400 px-4 py-4'>1</td> */}
                         <td className='border-2 border-blue-400 px-4 py-4'>
-                          <input type="text" className='input border-2 border-gray-600 h-8 rounded-md w-full' list='products' />
+                          <input type="text" className='input border-2 border-gray-600 h-8 rounded-md w-full' list='products' 
+                          onChange={(e) => handleOrderChange(order.id, "item", e.target.value) } />
                           <datalist id='products'>
                             <option value="Visiting Cards"></option>
                             <option value="Bill Book"></option>
@@ -140,11 +186,12 @@ export default function CreateEstimate() {
                         </td>
 
                         <td className='align-top pt-3'>
-                          <button className="btn btn-ghost" onClick={addRow}>X</button>
+                          <button className="btn btn-ghost" onClick={() => deleteRow(order.id)}>X</button>
                           <button className="btn btn-ghost">:</button>
                         </td>
 
                       </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div> {/* table ends here */}
@@ -153,6 +200,7 @@ export default function CreateEstimate() {
               
               <div className="justify-start card-actions mt-5">
                 <button className="btn btn-primary" onClick={addRow}>Add Row</button>
+                <button className="btn btn-primary" onClick={clearAll}>Clear</button>
               </div>
 
             <div className="grid grid-cols-12 gap-6">
