@@ -45,12 +45,12 @@ export default function Sidebar() {
           <div className="flex flex-row gap-6 mt-4 py-2">
             <FaRupeeSign fontSize={20}/>
             <button className="text-lg text-white hover:text-amber-400 transition delay-50 duration-300"
-            onClick={() => {setIsPurchase(!isPurchase); isSales?setIsSales(!isSales):setIsPurchase(isSales)}}>Purchase</button>
+            onClick={() => {setIsPurchase(!isPurchase); isSales?setIsSales(!isSales):setIsSales(isSales)}}>Purchase</button>
           </div>
             <div className={`flex flex-col text-start me-auto
               ${!isPurchase?'hidden':'block'}
               `}>
-            <Link href='/estimate' className='my-2 mt-3 hover:text-amber-400'>Vendors</Link>
+            <Link href='/vendor' className='my-2 mt-3 hover:text-amber-400'>Vendors</Link>
             <Link href='/' className='my-2 hover:text-amber-400'>Purchase Bill</Link>
               
             </div>

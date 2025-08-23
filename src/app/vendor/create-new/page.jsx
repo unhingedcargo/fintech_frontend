@@ -7,8 +7,8 @@ export default function NewCustomer() {
   const firstFocus = useRef(null);
   const [gstStatus, setGSTStatus] = useState(false);
   const [customer, setCustomer] = useState({
-    "acc_type" : "Sales",
-    "type_of_contact" : "Customer",
+    "acc_type" : "Purchase",
+    "type_of_contact" : "Vendor",
     "company_name" : "",
     "name" : "",
     "display_name" : "",
@@ -72,7 +72,7 @@ export default function NewCustomer() {
         </div>
         <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
-            <h1 className='text-2xl mb-4'>Add New Customer</h1>
+            <h1 className='text-2xl mb-4'>Add New Vendor</h1>
             {/* <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link> */}
           </div>
   
