@@ -1,9 +1,10 @@
 "use client"
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 
 export default function NewCustomer() {
+  const firstFocus = useRef(null);
   const [gstStatus, setGSTStatus] = useState(false);
   const [customer, setCustomer] = useState({
     "acc_type" : "Sales",
@@ -19,19 +20,46 @@ export default function NewCustomer() {
     "opening_balance" : 0.0
   });
 
+  useEffect(() => {
+    if(firstFocus.current) {
+      firstFocus.current.focus();
+    }
+  },[])
+
   const handleGSTStatus = (e) => {
-    // let gstInput = document.getElementById("gstInput")
+    let gstValue = document.getElementById("gstInput");
     setGSTStatus(e.target.checked);
-    // e.target.checked?
-    
+    setCustomer((prev) => ({...prev, "taxable" : e.target.checked}))
+    e.target.checked?setCustomer((prev) => ({...prev, "gstin":gstValue.value})):setCustomer((prev) => ({...prev, "gstin":""}))
   }
 
-  // const handleGSTInput = (e) => {
-  //   gstStatus?null:setCustomer((prev) => ({...prev, "gstin":""}))
-  // }
+  const handleGSTInput = (e) => {
+    setCustomer((prev) => ({...prev, "gstin":e.target.value}))
+  }
 
   const saveCustomer = () => {
     console.log(customer);
+    const URI = "http://localhost:8000/api/customer/create"
+    fetch(URI, {
+      method: 'POST',
+      body: JSON.stringify(customer),
+      headers:{
+        "content-type" : "application/json; charset=UTF-8" 
+      }
+    })
+    .then(response => {
+      if(!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(result => {
+      console.log("Date Submitted Successfully!!")
+      window.location.reload()
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }
 
 
@@ -73,7 +101,7 @@ export default function NewCustomer() {
                 <div className='col-span-2'>
                   <label className="input w-[45%]">
                     <span className="label">Company Name</span>
-                    <input tabIndex={0} type="text" placeholder="Comapany Name"
+                    <input tabIndex={0} type="text" placeholder="Comapany Name" ref={firstFocus}
                     onChange={(e) => setCustomer((prev) => ({...prev, "company_name":e.target.value}))}/>
                   </label>
                 </div>
@@ -134,17 +162,16 @@ export default function NewCustomer() {
                 </div>
 
                 <div>
-                  <label className="input w-[50%]">
+                  <label className="input w-[60%]">
                     {/* <span className="label">GSTIN</span> */}
                     <span className='label'>
-                      <label className="swap pe-4">
+                      <label className="swap pe-2">
                         <input type="checkbox" checked={gstStatus} onChange={handleGSTStatus}/>
                         <div className="swap-on bg-green-400 rounded-lg text-black font-bold py-2 px-4">GST Registered</div>
                         <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
                       </label>
                     </span>
-                    <input type="text" placeholder="99ABCDE9999F1ZX" disabled={!gstStatus}
-                     />
+                    <input type="text" placeholder="99ABCDE9999F1ZX" id='gstInput' disabled={!gstStatus} onChange={handleGSTInput} onFocus={handleGSTInput} onBlur={handleGSTInput}/>
                   </label>
                 </div>
 
