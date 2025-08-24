@@ -9,13 +9,13 @@ export default function Customer() {
   const [customers, setCustomers] = useState([]);
   const router = useRouter();
 
-  const URI = "http://localhost:8000/api/customer/all"
+  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
 
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try{
-        const res = await fetch(URI);
+        const res = await fetch(CUSTOMER_URI);
         if(!res.ok) {
           throw new Error("Failed to fetch")
         };
