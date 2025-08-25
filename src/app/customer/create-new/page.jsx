@@ -6,6 +6,8 @@ import Sidebar from '@/components/Sidebar';
 export default function NewCustomer() {
   const firstFocus = useRef(null);
   const [gstStatus, setGSTStatus] = useState(false);
+  const [showAlert, setAlert] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [customer, setCustomer] = useState({
     "acc_type" : "Sales",
     "type_of_contact" : "Customer",
@@ -38,7 +40,7 @@ export default function NewCustomer() {
   }
 
   const saveCustomer = () => {
-    console.log(customer);
+    setLoader(true);
     const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
     fetch(CREATE_CUSTOMER_URI, {
       method: 'POST',
@@ -54,49 +56,48 @@ export default function NewCustomer() {
       return response.json();
     })
     .then(result => {
-      console.log("Data Submitted Successfully!!")
-      window.location.reload()
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+      // window.location.reload()
     })
     .catch(error => {
       console.log(error);
     })
+    .finally (() => {
+      setLoader(false);
+    });
   }
 
 
 
   return (
     <>
+    {loader && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <span className="loading loading-spinner loading-xl"></span>
+        </div>
+      )}
       <div className='flex'>
         <div className="w-full md:w-64">
           <Sidebar />
         </div>
         <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
+
             <h1 className='text-2xl mb-4'>Add New Customer</h1>
             {/* <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link> */}
           </div>
-  
-            {/* <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8'>
-              <thead className='bg-blue-950'>
-                <tr>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[10%]'>#</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[15%]'>Date</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[35%]'>Customer</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Value</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[10%]'>#</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[15%]'>Date</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[35%]'>Customer</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Value</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Status</td>
-                </tr>
-              </tbody>
-            </table> */}
-          
+
+          {showAlert &&
+            <div role="alert" className="alert alert-success">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Your purchase has been confirmed!</span>
+            </div>
+          } 
             <div className="grid grid-cols-2 gap-8 mt-5">
                 <div className='col-span-2'>
                   <label className="input w-[50%]">

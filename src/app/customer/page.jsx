@@ -10,6 +10,7 @@ export default function Customer() {
   const router = useRouter();
 
   const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+  // const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
 
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function Customer() {
         </div>
 
           <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8'>
-            <thead className='bg-blue-950'>
+            <thead className='dark:bg-blue-950'>
               <tr>
                 <th className='border-2 border-blue-400 px-4 py-2 w-[5%]'>#</th>
                 <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Customer</th>

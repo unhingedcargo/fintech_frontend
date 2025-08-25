@@ -1,9 +1,35 @@
-import Sidebar from '@/components/Sidebar'
-import Link from 'next/link'
-import React from 'react'
+"use client"
+import Sidebar from '@/components/Sidebar';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 
-export default function Customer() {
+export default function Vendor() {
+    const [vendors, setVendors] = useState([]);
+    const router = useRouter();
+  
+    // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+    const CUSTOMER_URI = "http://localhost:8000/api/vendors/all"
+  
+  
+    useEffect(() => {
+      const fetchVendors = async () => {
+        try{
+          const res = await fetch(CUSTOMER_URI);
+          if(!res.ok) {
+            throw new Error("Failed to fetch")
+          };
+          setVendors(await res.json());
+          console.log(vendors)
+  
+        } catch(err){
+          console.log(err);
+        }
+      };
+      fetchVendors();
+    },[])
+  
   return (
     <>
     <div className='flex'>
@@ -28,14 +54,16 @@ export default function Customer() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[5%] text-center'>123</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[20%]'>Date</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[25%]'>Date</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[20%] text-center'>Customer</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-center'>Value</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-end'>Status</td>
+              {vendors.map((row, index) => (
+                <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`vendor/${row.display_name}`))}>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[5%] text-center'>{index+1}</td>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[20%]'>{row.display_name}</td>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[25%]'>{row.company_name}</td>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[20%] text-center'>{row.contact}</td>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-center'>{row.gstin}</td>
+                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-end'>{row.closing_balance}</td>
               </tr>
+              ))}
             </tbody>
           </table>
       </div>
