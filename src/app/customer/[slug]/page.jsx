@@ -50,7 +50,7 @@ export default function CustomerDetails(params) {
 
     const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
     fetch(CREATE_CUSTOMER_URI, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(customer),
       headers:{
         "content-type" : "application/json; charset=UTF-8" 
