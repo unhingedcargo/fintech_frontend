@@ -1,12 +1,13 @@
 "use client"
 import Sidebar from '@/components/Sidebar';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { MdOutlineCreate, MdCheck } from "react-icons/md";
 
 export default function CustomerDetails(params) {
+  const router = useRouter();
 	const [customer, setCustomer] = useState([]);
-  const [showAlert, setAlert] = useState(false);
+  const [showAlert, setAlert] = useState({show:false, type:"success", message:""});
   const [loader, setLoader] = useState(false);
   const [isCompany, setCompany] = useState(true);
   const [isName, setName] = useState(true);
@@ -47,10 +48,11 @@ export default function CustomerDetails(params) {
     customer.map((row) => console.log("PREVIOUS DATA : ", row))
 
     console.log("DATA IS SENDING FOR UPDATE");
-
-    const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
+    setLoader(true);
+    // const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
+    const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${slug}`
     fetch(CREATE_CUSTOMER_URI, {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(customer),
       headers:{
         "content-type" : "application/json; charset=UTF-8" 
@@ -63,9 +65,10 @@ export default function CustomerDetails(params) {
       return response.json();
     })
     .then(result => {
-      setAlert(true);
+      setAlert({show:true, type:"success", message:`${customer[0].display_name} Updated Successfully..!!`});
+      console.log(customer);
       setTimeout(() => {
-        setAlert(false);
+        setAlert({show:false, type:"success", message:""});
       }, 3000);
       // window.location.reload()
     })
@@ -76,6 +79,48 @@ export default function CustomerDetails(params) {
       setLoader(false);
     });
   }
+
+  const deleteData = async () => {
+    customer.map((row) => console.log("PREVIOUS DATA : ", row))
+    
+    console.log("DATA IS SENDING FOR DELETE");
+    
+    const DELETE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/delete/${slug}`
+
+    try{
+      const res = await fetch(DELETE_CUSTOMER_URI, {
+        method:"DELETE",
+        headers:{
+          "content-type" : "application/json; charset=UTF-8",
+        },
+      })
+
+      if(!res.ok){
+        throw new Error(`HTTP error! status: ${res.status}`)
+      }
+
+      const result = await res.json()
+      console.log(result);
+
+      setAlert({show:true, type:"success", message:`Deleted Successfully..!!`});
+      setTimeout(() => {
+        setAlert({show:false, type:"success", message:""});
+      }, 2000);
+      
+      router.push("/customer");
+    } catch(error){
+      console.log("DELETE ERROR! : ", error.message, error);
+      
+      setAlert({show:true, type:"error", message:`Something went wrong! Unknown Error!`});
+      setTimeout(() => {
+        setAlert({show:false, type:"success", message:""});
+      }, 2000);
+    } finally {
+      setLoader(false);      
+    }
+  }
+
+
 
   return (
     <>
@@ -89,16 +134,19 @@ export default function CustomerDetails(params) {
 					<Sidebar />
 				</div>
 				<div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
-					<div className="flex flex-row align-middle">
 
-          {showAlert &&
-            <div role="alert" className="alert alert-success">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>Your purchase has been confirmed!</span>
+            <div className='w-[80%] mb-5'>
+              {showAlert.show &&
+              <div role="alert" className="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className='text-lg'>{showAlert.message}</span>
+              </div>
+              } 
             </div>
-          } 
+                
+            <div className="flex flex-row align-middle">
 
             {customer.map((row, index) => 
             <div className="card card-border bg-base-100 w-[80%]" key={index}>
@@ -201,7 +249,22 @@ export default function CustomerDetails(params) {
               
                 <div className="card-actions justify-start mt-6 ms-auto me-[50%]">
                 <button className="btn btn-primary" onClick={updateData}>Update</button>
-                <button className="btn btn-soft">Reset</button>
+                {/* Open the modal using document.getElementById('ID').showModal() method */}
+                <button className="btn btn-error" onClick={()=>document.getElementById('my_modal_1').showModal()}>Delete</button>
+                <dialog id="my_modal_1" className="modal">
+                  <div className="modal-box">
+                    <h3 className="font-bold text-lg">Confirm Deletion! <span className='bg-red-500 text-white p-3 ms-3 rounded-full'>{row.display_name}</span></h3>
+                    <p className="py-4">Do you want to delete?</p>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn btn-error" onClick={() => deleteData()}>Confirm Delete</button>
+                        <button className="btn">Cancel</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+                <button className="btn btn-soft">Back</button>
                 </div>
               </div>
             </div>

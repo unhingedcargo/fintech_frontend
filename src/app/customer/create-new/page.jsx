@@ -2,9 +2,11 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
+import { useRouter } from 'next/navigation';
 
 export default function NewCustomer() {
   const firstFocus = useRef(null);
+  const router = useRouter();
   const [gstStatus, setGSTStatus] = useState(false);
   const [showAlert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -60,6 +62,7 @@ export default function NewCustomer() {
       setTimeout(() => {
         setAlert(false);
       }, 3000);
+      router.push({pathname:"/customer", query:{message:`${customer.display_name} Created Successfully`}});
       // window.location.reload()
     })
     .catch(error => {
@@ -95,7 +98,7 @@ export default function NewCustomer() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span>Your purchase has been confirmed!</span>
+              <span>Contact Created Successfully!</span>
             </div>
           } 
             <div className="grid grid-cols-2 gap-8 mt-5">
