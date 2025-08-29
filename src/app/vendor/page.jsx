@@ -9,8 +9,8 @@ export default function Vendor() {
     const [vendors, setVendors] = useState([]);
     const router = useRouter();
   
-    // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-    const CUSTOMER_URI = "http://localhost:8000/api/vendors/all"
+    const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+    // const CUSTOMER_URI = "http://localhost:8000/api/vendors/all"
   
   
     useEffect(() => {

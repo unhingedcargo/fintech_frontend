@@ -19,9 +19,10 @@ export default function EstimatePage() {
 
   useEffect(() => {
     // fetch data inside async function
+    const JOBCARD_URI = "https://fintech-backend-08wx.onrender.com/api/jobcard"
     const fetchEstimates = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/jobcard");
+        const res = await fetch(JOBCARD_URI);
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setEstimates(data);

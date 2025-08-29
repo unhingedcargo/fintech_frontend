@@ -16,7 +16,7 @@ export default function CreateEstimate() {
   const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
-    const URI = "http://localhost:8000/api/nextjobno"
+    const URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno"
     const nextjob = async () => {
       try{
         const res = await fetch(URI);

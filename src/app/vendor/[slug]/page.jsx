@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { MdOutlineCreate, MdCheck } from "react-icons/md";
 
 export default function CustomerDetails(params) {
-    const [customer, setCustomer] = useState([]);
+  const [customer, setCustomer] = useState([]);
   const [isToggled, setToggled] = useState(true);
   const [isCompany, setCompany] = useState(true);
   const [isName, setName] = useState(true);
@@ -14,24 +14,24 @@ export default function CustomerDetails(params) {
   const [isAltContact, setAltContact] = useState(true);
   const [isEmail, setEmail] = useState(true);
   const [isGST, setGST] = useState(true);
-    const {slug} = useParams();
+  const {slug} = useParams();
 
-    useEffect(() => {
-        // const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
-        const URI = `http://localhost:8000/api/contact/${slug}`;
-        const fetchContact = async () => {
-            try {
-                const res = await fetch(URI);
-                if(!res.ok){
-                    throw new Error ("Failed to fetch");
-                }
-                setCustomer(await res.json());
-            }catch(err) {
-                console.log(err);
-            }
-        }
-        fetchContact();
-    },[])
+  useEffect(() => {
+      const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
+      // const URI = `http://localhost:8000/api/contact/${slug}`;
+      const fetchContact = async () => {
+          try {
+              const res = await fetch(URI);
+              if(!res.ok){
+                  throw new Error ("Failed to fetch");
+              }
+              setCustomer(await res.json());
+          }catch(err) {
+              console.log(err);
+          }
+      }
+      fetchContact();
+  },[])
     
 
   const itemBlurred = (e) => {

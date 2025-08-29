@@ -1,7 +1,8 @@
+import { useParams } from 'next/navigation'
 import React from 'react'
 
 export default function EstimateDetails({ params }) {
-    const { slug } = React.use(params)
+    const { slug } = useParams(params)
   return (
     <div>
       Estimate Details { slug } 

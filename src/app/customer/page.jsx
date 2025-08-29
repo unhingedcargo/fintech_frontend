@@ -9,8 +9,8 @@ export default function Customer() {
   const [customers, setCustomers] = useState([]);
   const router = useRouter();
 
-  // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-  const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
+  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+  // const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
 
 
   useEffect(() => {

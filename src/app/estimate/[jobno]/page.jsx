@@ -1,9 +1,10 @@
 "use client"
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 
 export default function EstimateDetails({params}) {
-    const {jobno} = React.use(params);
+    const {jobno} = useParams(params);
     const [jobData, setJobData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
