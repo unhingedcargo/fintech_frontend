@@ -24,6 +24,7 @@ export default function Customer() {
       setAlert(true);
     }
     setTimeout(() => {
+      router.replace("/customer")
       setAlert(false);
     }, 3000);
   },[message])
@@ -79,23 +80,25 @@ export default function Customer() {
           <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8'>
             <thead className='dark:bg-blue-950'>
               <tr>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[5%]'>#</th>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Customer</th>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[25%]'>Company Name</th>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Contact</th>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[15%]'>GSTIN</th>
-                <th className='border-2 border-blue-400 px-4 py-2 w-[15%]'>Closing Balance</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[5%]'>#</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>Customer</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>Company Name</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>Contact</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>Alternate Contact</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[15%]'>GSTIN</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>Closing Balance</th>
               </tr>
             </thead>
             <tbody>
               {customers.map((row, index) => (
                 <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`customer/${row.cust_id}`))}>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[5%] text-center'>{index+1}</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[20%]'>{row.display_name}</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[25%]'>{row.company_name}</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[20%] text-center'>{row.contact}</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-center'>{row.gstin}</td>
-                <td className='border-2 border-blue-400 px-4 py-4 w-[15%] text-end'>{row.closing_balance}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[5%] text-center'>{index+1}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.display_name}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.company_name}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.contact}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.alt_contact}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[15%] text-center'>{row.gstin}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-end'>{row.closing_balance}</td>
               </tr>
               ))}
             </tbody>

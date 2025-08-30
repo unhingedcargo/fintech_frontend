@@ -29,11 +29,15 @@ export default function CustomerDetails(params) {
 					throw new Error ("Failed to fetch");
 				}
         const get_customer = await res.json();
-        console.log("FETCHED CUSTOMER ", get_customer);
 				setCustomer(get_customer);
         setLoader(false);
 			}catch(err) {
 				console.log(err);
+        setAlert({show:true, type:"error", message:`Something went wrong!`});
+        setTimeout(() => {
+          setAlert({show:false, type:"success", message:""});
+        }, 3000);
+
 			}
 		}
 		fetchContact();
@@ -47,11 +51,6 @@ export default function CustomerDetails(params) {
   }
     
   const updateData = async () => {
-    customer.map((row) => console.log("PREVIOUS DATA : ", row))
-
-
-    console.log("DATA IS SENDING FOR UPDATE", customer);
-
     setLoader(true);
     // const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
     const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${encodeURIComponent(slug)}`
@@ -103,11 +102,6 @@ export default function CustomerDetails(params) {
       if(!res.ok){
         throw new Error(`HTTP error! status: ${res.status}`)
       }
-      setAlert({show:true, type:"success", message:`Deleted Successfully..!!`});
-      setTimeout(() => {
-        setAlert({show:false, type:"success", message:""});
-      }, 2000);
-      // router.push("/customer");
       router.push(`/customer?message=${encodeURIComponent(deleteName)} Deleted Successfully`); 
     } catch(error){
       console.log("DELETE ERROR! : ", error.message, error);
@@ -261,7 +255,7 @@ export default function CustomerDetails(params) {
                     </div>
                   </div>
                 </dialog>
-                <button className="btn btn-soft">Back</button>
+                <button className="btn btn-soft" onClick={() => router.push("/customer")}>Back</button>
                 </div>
               </div>
             </div>
