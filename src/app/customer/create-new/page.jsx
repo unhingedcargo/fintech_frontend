@@ -43,7 +43,8 @@ export default function NewCustomer() {
 
   const saveCustomer = () => {
     setLoader(true);
-    const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
+    // const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
+    const CREATE_CUSTOMER_URI = "http://localhost:8000/api/contact/create"
     fetch(CREATE_CUSTOMER_URI, {
       method: 'POST',
       body: JSON.stringify(customer),
@@ -62,8 +63,7 @@ export default function NewCustomer() {
       setTimeout(() => {
         setAlert(false);
       }, 3000);
-      router.push({pathname:"/customer", query:{message:`${customer.display_name} Created Successfully`}});
-      // window.location.reload()
+      router.push(`/customer?message=${encodeURIComponent(customer.display_name)} Created Successfully`); 
     })
     .catch(error => {
       console.log(error);

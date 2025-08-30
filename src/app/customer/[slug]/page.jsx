@@ -19,8 +19,8 @@ export default function CustomerDetails(params) {
 	const {slug} = useParams();
 
 	useEffect(() => {
-		const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
-		// const URI = `http://localhost:8000/api/contact/${slug}`;
+		// const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
+		const URI = `http://localhost:8000/api/contact/${slug}`;
     setLoader(true);
 		const fetchContact = async () => {
 			try {
@@ -28,7 +28,9 @@ export default function CustomerDetails(params) {
 				if(!res.ok){
 					throw new Error ("Failed to fetch");
 				}
-				setCustomer(await res.json());
+        const get_customer = await res.json();
+        console.log("FETCHED CUSTOMER ", get_customer);
+				setCustomer(get_customer);
         setLoader(false);
 			}catch(err) {
 				console.log(err);
@@ -47,13 +49,15 @@ export default function CustomerDetails(params) {
   const updateData = async () => {
     customer.map((row) => console.log("PREVIOUS DATA : ", row))
 
-    console.log("DATA IS SENDING FOR UPDATE");
+
+    console.log("DATA IS SENDING FOR UPDATE", customer);
+
     setLoader(true);
-    const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
-    // const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${slug}`
+    // const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
+    const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${encodeURIComponent(slug)}`
     fetch(CREATE_CUSTOMER_URI, {
       method: 'PATCH',
-      body: JSON.stringify(customer),
+      body: JSON.stringify(customer[0]),
       headers:{
         "content-type" : "application/json; charset=UTF-8" 
       }
@@ -70,10 +74,13 @@ export default function CustomerDetails(params) {
       setTimeout(() => {
         setAlert({show:false, type:"success", message:""});
       }, 3000);
-      // window.location.reload()
+      setTimeout(() =>{
+        router.push("/customer");
+      },2000)
     })
     .catch(error => {
       console.log(error);
+      router.push(`/customer?message=Something Went Wrong!`); 
     })
     .finally (() => {
       setLoader(false);
@@ -81,12 +88,10 @@ export default function CustomerDetails(params) {
   }
 
   const deleteData = async () => {
-    customer.map((row) => console.log("PREVIOUS DATA : ", row))
-    
-    console.log("DATA IS SENDING FOR DELETE");
-    
-    const DELETE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/delete/${slug}`
 
+    // const DELETE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/delete/${slug}`
+    const DELETE_CUSTOMER_URI = `http://localhost:8000/api/contact/delete/${slug}`
+    const deleteName = customer[0].display_name;
     try{
       const res = await fetch(DELETE_CUSTOMER_URI, {
         method:"DELETE",
@@ -98,23 +103,15 @@ export default function CustomerDetails(params) {
       if(!res.ok){
         throw new Error(`HTTP error! status: ${res.status}`)
       }
-
-      const result = await res.json()
-      console.log(result);
-
       setAlert({show:true, type:"success", message:`Deleted Successfully..!!`});
       setTimeout(() => {
         setAlert({show:false, type:"success", message:""});
       }, 2000);
-      
-      router.push("/customer");
+      // router.push("/customer");
+      router.push(`/customer?message=${encodeURIComponent(deleteName)} Deleted Successfully`); 
     } catch(error){
       console.log("DELETE ERROR! : ", error.message, error);
-      
-      setAlert({show:true, type:"error", message:`Something went wrong! Unknown Error!`});
-      setTimeout(() => {
-        setAlert({show:false, type:"success", message:""});
-      }, 2000);
+      router.push(`/customer?message=Something Went Wrong!`); 
     } finally {
       setLoader(false);      
     }

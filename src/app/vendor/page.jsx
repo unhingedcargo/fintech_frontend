@@ -9,19 +9,20 @@ export default function Vendor() {
     const [vendors, setVendors] = useState([]);
     const router = useRouter();
   
-    const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-    // const CUSTOMER_URI = "http://localhost:8000/api/vendors/all"
+    // const VENDOR_URI = "https://fintech-backend-08wx.onrender.com/api/vendor/all"
+    const VENDOR_URI = "http://localhost:8000/api/vendor/all"
   
   
     useEffect(() => {
       const fetchVendors = async () => {
         try{
-          const res = await fetch(CUSTOMER_URI);
+          const res = await fetch(VENDOR_URI);
           if(!res.ok) {
             throw new Error("Failed to fetch")
           };
           setVendors(await res.json());
-          console.log(vendors)
+          vendors.map((row) => console.log(row))
+          // console.log("ALL VENDORS", vendors)
   
         } catch(err){
           console.log(err);
@@ -29,6 +30,9 @@ export default function Vendor() {
       };
       fetchVendors();
     },[])
+
+
+
   
   return (
     <>
@@ -38,7 +42,7 @@ export default function Vendor() {
       </div>
       <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
         <div className="flex flex-row align-middle">
-          <h1 className='text-2xl mb-4'>Vendors</h1>
+          <h1 className='text-2xl mb-4'>All Vendors</h1>
           <Link href="/vendor/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
 

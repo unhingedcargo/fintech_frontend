@@ -1,19 +1,36 @@
 "use client"
 import Sidebar from '@/components/Sidebar'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 
 export default function Customer() {
   const [customers, setCustomers] = useState([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const message = searchParams.get("message")
+  const [alert, setAlert] = useState(false);
+  const [loader, setLoader] = useState(false);
 
-  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-  // const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
+
+  // const message = searchParams.get('message');
+
+  // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+  const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
+
+  useEffect(() => {
+    if(message) {
+      setAlert(true);
+    }
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
+  },[message])
 
 
   useEffect(() => {
+    setLoader(true)    ;
     const fetchCustomers = async () => {
       try{
         const res = await fetch(CUSTOMER_URI);
@@ -21,6 +38,8 @@ export default function Customer() {
           throw new Error("Failed to fetch")
         };
         setCustomers(await res.json());
+        customers.map((row) => console.log(row))
+        setLoader(false);
 
       } catch(err){
         console.log(err);
@@ -39,8 +58,21 @@ export default function Customer() {
         <Sidebar />
       </div>
       <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
+
+        <div className='w-[80%] mb-5'>
+              {alert &&
+              <div role="alert" className="alert alert-success alert-soft">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className='text-lg'>{message}</span>
+              </div>
+              } 
+            </div>
+        
         <div className="flex flex-row align-middle">
-          <h1 className='text-2xl mb-4'>All Customers</h1>
+
+          <h1 className='text-2xl mb-4'>All Customers{loader && (<span className="loading loading-spinner loading-xl"></span>)}</h1>
           <Link href="/customer/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
 
@@ -57,7 +89,7 @@ export default function Customer() {
             </thead>
             <tbody>
               {customers.map((row, index) => (
-                <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`customer/${row.display_name}`))}>
+                <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`customer/${row.cust_id}`))}>
                 <td className='border-2 border-blue-400 px-4 py-4 w-[5%] text-center'>{index+1}</td>
                 <td className='border-2 border-blue-400 px-4 py-4 w-[20%]'>{row.display_name}</td>
                 <td className='border-2 border-blue-400 px-4 py-4 w-[25%]'>{row.company_name}</td>
