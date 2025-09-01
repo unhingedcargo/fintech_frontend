@@ -5,27 +5,39 @@ import { FaHome, FaLandmark, FaRupeeSign } from "react-icons/fa";
 import { MdProductionQuantityLimits } from 'react-icons/md';
 
 export default function Sidebar() {
+  const [isOpen, setIsOpen] = useState(false);
   const [isSales, setIsSales] = useState(false);
   const [isPurchase, setIsPurchase] = useState(false);
   
   return (
     <>
     <div className="flex pt-20">
+      <button
+        className="lg:hidden fixed top-5 left-5 z-20 bg-gray-900 text-white px-3 py-2 rounded-md"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        ☰
+      </button>
       {/* Sidebar */}
       <div
         // Conditional class based on isOpen 
         // state to control width and visibility
         className={`bg-gray-900 text-white 
-                    fixed w-[12%] h-screen transition-all overflow-y-auto
-                    duration-300 z-10`}>
+                    fixed h-screen transition-all overflow-y-auto
+                    duration-300 z-10
+                    ${isOpen?"w-2/3":"w-0"}
+                    lg: w-[12%] lg:block
+                    `}>
         {/* Sidebar content */}
         <div className="flex flex-col items-start ps-5">
           <div className="flex flex-row gap-6 mt-4 py-2">
-            <FaHome fontSize={20} /> <Link href="/" className="text-lg text-white hover:text-amber-400 transition delay-50 duration-300">Home</Link>
+            <FaHome fontSize={20} /> 
+            <Link href="/" className="text-lg text-white hover:text-amber-400 transition delay-50 duration-300">Home</Link>
           </div>
 
           <div className="flex flex-row gap-6 mt-4 py-2">
-            <MdProductionQuantityLimits fontSize={20} className='' /> <Link href="/" className="text-lg text-white hover:text-amber-400 transition delay-50 duration-300">Items</Link>
+            <MdProductionQuantityLimits fontSize={20} className='' /> 
+            <Link href="/item" className="text-lg text-white hover:text-amber-400 transition delay-50 duration-300">Items</Link>
           </div>
 
           <div className="flex flex-row gap-6 mt-4 py-2">

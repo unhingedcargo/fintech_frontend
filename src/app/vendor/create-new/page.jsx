@@ -2,13 +2,13 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
-import { useRouter } from 'next/router';
-
+import { useRouter } from 'next/navigation';
 
 export default function NewVendor() {
   const firstFocus = useRef(null);
   const router = useRouter();
   const [gstStatus, setGSTStatus] = useState(false);
+  const [showAlert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
   const [vendor, setVendor] = useState({
     "acc_type" : "Purchase",
@@ -43,10 +43,9 @@ export default function NewVendor() {
 
   const saveVendor = () => {
     setLoader(true);
-    console.log(vendor);
-    const URI = "http://localhost:8000/api/contact/create"
-    // const URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
-    fetch(URI, {
+    // const CREATE_VENDOR_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
+    const CREATE_VENDOR_URI = "http://localhost:8000/api/contact/create"
+    fetch(CREATE_VENDOR_URI, {
       method: 'POST',
       body: JSON.stringify(vendor),
       headers:{
@@ -60,21 +59,28 @@ export default function NewVendor() {
       return response.json();
     })
     .then(result => {
-      console.log("Data Submitted Successfully!!")
-      router
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+      router.push(`/vendor?message=${encodeURIComponent(vendor.display_name)} Created Successfully!!`); 
     })
     .catch(error => {
       console.log(error);
     })
+    .finally (() => {
+      setLoader(false);
+    });
   }
 
 
 
   return (
     <>
-      {loader && (
+    {loader && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <span className="loading loading-spinner loading-xl"></span>
+          <span className="loading loading-dots loading-xl"></span>
+          {/* <div className="skeleton h-32 w-32"></div> */}
         </div>
       )}
       <div className='flex'>
@@ -83,31 +89,19 @@ export default function NewVendor() {
         </div>
         <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
-            <h1 className='text-2xl mb-4'>Add New Vendor</h1>
+
+            <h1 className='text-2xl mb-4'>Vendor Registration</h1>
             {/* <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link> */}
           </div>
-  
-            {/* <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8'>
-              <thead className='bg-blue-950'>
-                <tr>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[10%]'>#</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[15%]'>Date</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[35%]'>vendor</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Value</th>
-                  <th className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[10%]'>#</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[15%]'>Date</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[35%]'>vendor</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Value</td>
-                  <td className='border-2 border-blue-400 px-4 py-2 w-[20%]'>Status</td>
-                </tr>
-              </tbody>
-            </table> */}
-          
+
+          {showAlert &&
+            <div role="alert" className="alert alert-success">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Contact Created Successfully!</span>
+            </div>
+          } 
             <div className="grid grid-cols-2 gap-8 mt-5">
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
@@ -120,7 +114,7 @@ export default function NewVendor() {
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
                     <span className="label">Name</span>
-                    <input tabIndex={0} type="text" placeholder="vendor"
+                    <input tabIndex={0} type="text" placeholder="Customer"
                     onChange={(e) => setVendor((prev) => ({...prev, "name":e.target.value}))}/>
                   </label>
                 </div>
@@ -136,15 +130,17 @@ export default function NewVendor() {
                 <div>
                   <label className="input w-[50%]">
                     <span className="label">Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setVendor((prev) => ({...prev, "contact":e.target.value}))}/>
+                    <input type="text" placeholder="Primary Phone" 
+                    onChange={(e) => setVendor((prev) => ({...prev, "contact":e.target.value}))}
+                    maxLength={15}/>
                   </label>
                 </div>
                 <div>
                   <label className="input w-[60%]">
                     <span className="label">Alternate Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setVendor((prev) => ({...prev, "alt_contact":e.target.value}))}/>
+                    <input type="text" placeholder="Alternate Phone" 
+                    onChange={(e) => setVendor((prev) => ({...prev, "alt_contact":e.target.value}))}
+                    maxLength={15}/>
                   </label>
                 </div>
                 
@@ -163,7 +159,8 @@ export default function NewVendor() {
                       </g>
                     </svg>
                     <input type="email" placeholder="mail@email.com" 
-                    onChange={(e) => setVendor((prev) => ({...prev, "email":e.target.value}))}/>
+                    onChange={(e) => setVendor((prev) => ({...prev, "email":e.target.value}))}
+                    maxLength={100}/>
                   </label>
                   <div className="validator-hint hidden">Enter valid email address</div>
                 </div>
@@ -182,7 +179,11 @@ export default function NewVendor() {
                         <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
                       </label>
                     </span>
-                    <input type="text" placeholder="99ABCDE9999F1ZX" id='gstInput' disabled={!gstStatus} onChange={handleGSTInput} onFocus={handleGSTInput} onBlur={handleGSTInput}/>
+                    <input type="text" placeholder="99ABCDE9999F1ZX" id='gstInput' disabled={!gstStatus} 
+                    onChange={handleGSTInput} 
+                    onFocus={handleGSTInput} 
+                    onBlur={handleGSTInput}
+                    maxLength={15}/>
                   </label>
                 </div>
 

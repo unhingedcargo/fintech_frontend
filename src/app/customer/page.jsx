@@ -39,11 +39,10 @@ export default function Customer() {
           throw new Error("Failed to fetch")
         };
         setCustomers(await res.json());
-        customers.map((row) => console.log(row))
-        setLoader(false);
-
       } catch(err){
         console.log(err);
+      } finally {
+        setLoader(false);        
       }
     };
     fetchCustomers();

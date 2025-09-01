@@ -4,24 +4,22 @@ import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { useRouter } from 'next/navigation';
 
-export default function NewCustomer() {
+export default function CreateItem() {
   const firstFocus = useRef(null);
   const router = useRouter();
   const [gstStatus, setGSTStatus] = useState(false);
   const [showAlert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [customer, setCustomer] = useState({
-    "acc_type" : "Sales",
-    "type_of_contact" : "Customer",
-    "company_name" : "",
-    "name" : "",
-    "display_name" : "",
-    "contact" : "",
-    "alt_contact" : "",
-    "email" : "",
-    "taxable" : false,
-    "gstin" : "",
-    "opening_balance" : 0.0
+  const [item, setItem] = useState({
+    "type": "",
+    "code": "",
+    "item": "",
+    "unit": "nos",
+    "hsn_code": "",
+    "tax_preference": "",
+    "taxrates": 0.0,
+    "purchase_rate": 0.0,
+    "sales_rate": 0.0
   });
 
   useEffect(() => {
@@ -30,16 +28,31 @@ export default function NewCustomer() {
     }
   },[])
 
+  const handleItemType = (e) => {
+    console.log(e.target.value);
+    console.log(item);
+    setItem((prev) => ({...prev, "type" : e.target.value}));
+  }
+  
+  const showData = () => {
+    
+    console.log(item);
+  }
+
   const handleGSTStatus = (e) => {
     let gstValue = document.getElementById("gstInput");
     setGSTStatus(e.target.checked);
-    setCustomer((prev) => ({...prev, "taxable" : e.target.checked}))
-    e.target.checked?setCustomer((prev) => ({...prev, "gstin":gstValue.value})):setCustomer((prev) => ({...prev, "gstin":""}))
+    setItem((prev) => ({...prev, "taxable" : e.target.checked}))
+    e.target.checked?setItem((prev) => ({...prev, "gstin":gstValue.value})):setItem((prev) => ({...prev, "gstin":""}))
   }
 
   const handleGSTInput = (e) => {
-    setCustomer((prev) => ({...prev, "gstin":e.target.value}))
+    setItem((prev) => ({...prev, "gstin":e.target.value}))
   }
+
+
+
+
 
   const saveCustomer = () => {
     setLoader(true);
@@ -47,7 +60,7 @@ export default function NewCustomer() {
     const CREATE_CUSTOMER_URI = "http://localhost:8000/api/contact/create"
     fetch(CREATE_CUSTOMER_URI, {
       method: 'POST',
-      body: JSON.stringify(customer),
+      body: JSON.stringify(item),
       headers:{
         "content-type" : "application/json; charset=UTF-8" 
       }
@@ -63,7 +76,7 @@ export default function NewCustomer() {
       setTimeout(() => {
         setAlert(false);
       }, 3000);
-      router.push(`/customer?message=${encodeURIComponent(customer.display_name)} Created Successfully!!`); 
+      router.push(`/item?message=${encodeURIComponent(item.display_name)} Created Successfully!!`); 
     })
     .catch(error => {
       console.log(error);
@@ -72,6 +85,8 @@ export default function NewCustomer() {
       setLoader(false);
     });
   }
+
+
 
 
 
@@ -89,7 +104,7 @@ export default function NewCustomer() {
         <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
 
-            <h1 className='text-2xl mb-4'>Add New Customer</h1>
+            <h1 className='text-2xl mb-4'>New Item</h1>
             {/* <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link> */}
           </div>
 
@@ -102,19 +117,21 @@ export default function NewCustomer() {
             </div>
           } 
             <div className="grid grid-cols-2 gap-8 mt-5">
-                <div className='col-span-2'>
-                  <label className="input w-[50%]">
-                    <span className="label">Company Name</span>
-                    <input tabIndex={0} type="text" placeholder="Comapany Name" ref={firstFocus}
-                    onChange={(e) => setCustomer((prev) => ({...prev, "company_name":e.target.value}))}/>
-                  </label>
-                </div>
+                
+              <div className='col-span-2'>
+                <form className="filter items-center gap-2">
+                  <span>Item Type</span>
+                  <input className="btn btn-square" type="reset" value="×"/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Goods" value={"Goods"} onClick={handleItemType}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Service" value={"Service"} onClick={handleItemType}/>
+                </form>
+              </div>
                 
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
                     <span className="label">Name</span>
-                    <input tabIndex={0} type="text" placeholder="Customer"
-                    onChange={(e) => setCustomer((prev) => ({...prev, "name":e.target.value}))}/>
+                    <input tabIndex={0} type="text" placeholder="item"
+                    onChange={(e) => setItem((prev) => ({...prev, "name":e.target.value}))}/>
                   </label>
                 </div>
                 
@@ -122,7 +139,7 @@ export default function NewCustomer() {
                   <label className="input w-[50%]">
                     <span className="label">Display Name</span>
                     <input type="text" placeholder="Display Name" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "display_name":e.target.value}))}/>
+                    onChange={(e) => setItem((prev) => ({...prev, "display_name":e.target.value}))}/>
                   </label>
                 </div>
                 
@@ -130,14 +147,14 @@ export default function NewCustomer() {
                   <label className="input w-[50%]">
                     <span className="label">Contact No.</span>
                     <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "contact":e.target.value}))}/>
+                    onChange={(e) => setItem((prev) => ({...prev, "contact":e.target.value}))}/>
                   </label>
                 </div>
                 <div>
                   <label className="input w-[60%]">
                     <span className="label">Alternate Contact No.</span>
                     <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "alt_contact":e.target.value}))}/>
+                    onChange={(e) => setItem((prev) => ({...prev, "alt_contact":e.target.value}))}/>
                   </label>
                 </div>
                 
@@ -156,7 +173,7 @@ export default function NewCustomer() {
                       </g>
                     </svg>
                     <input type="email" placeholder="mail@email.com" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "email":e.target.value}))}/>
+                    onChange={(e) => setItem((prev) => ({...prev, "email":e.target.value}))}/>
                   </label>
                   <div className="validator-hint hidden">Enter valid email address</div>
                 </div>
@@ -186,13 +203,14 @@ export default function NewCustomer() {
                   <label className="input w-[30%]">
                     <span className="label">Opening Balance</span>
                     <input type="text" defaultValue={0.00} 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "opening_balance":e.target.value}))}/>
+                    onChange={(e) => setItem((prev) => ({...prev, "opening_balance":e.target.value}))}/>
                   </label>
                 </div>
 
                 <div>
                   <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
                   <button className='btn btn-ouline ms-4' onClick={()=>{window.location.reload()}}>Cancel</button>
+                  <button className='btn btn-ouline ms-4' onClick={showData}>showItem</button>
                 </div>
 
 
