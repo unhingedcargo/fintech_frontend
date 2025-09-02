@@ -29,21 +29,24 @@ export default function CreateItem() {
   },[])
 
   const handleItemType = (e) => {
-    console.log(e.target.value);
-    console.log(item);
     setItem((prev) => ({...prev, "type" : e.target.value}));
+  }
+  
+  const handleUnitType = (e) => {
+    setItem((prev) => ({...prev, "unit" : e.target.value}));
+  }
+  
+  const handleIsTaxable = (e) => {
+    setItem((prev) => ({...prev, "tax_preference" : e.target.value}));
   }
   
   const showData = () => {
     
     console.log(item);
   }
-
-  const handleGSTStatus = (e) => {
-    let gstValue = document.getElementById("gstInput");
-    setGSTStatus(e.target.checked);
-    setItem((prev) => ({...prev, "taxable" : e.target.checked}))
-    e.target.checked?setItem((prev) => ({...prev, "gstin":gstValue.value})):setItem((prev) => ({...prev, "gstin":""}))
+  
+  const handleTaxRate = (e) => {
+    setItem((prev) => ({...prev, "taxrates" : parseFloat(e.target.value)}));
   }
 
   const handleGSTInput = (e) => {
@@ -56,9 +59,9 @@ export default function CreateItem() {
 
   const saveCustomer = () => {
     setLoader(true);
-    // const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
-    const CREATE_CUSTOMER_URI = "http://localhost:8000/api/contact/create"
-    fetch(CREATE_CUSTOMER_URI, {
+    // const CREATE_ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/create"
+    const CREATE_ITEM_URI = "http://localhost:8000/api/item/create"
+    fetch(CREATE_ITEM_URI, {
       method: 'POST',
       body: JSON.stringify(item),
       headers:{
@@ -76,7 +79,7 @@ export default function CreateItem() {
       setTimeout(() => {
         setAlert(false);
       }, 3000);
-      router.push(`/item?message=${encodeURIComponent(item.display_name)} Created Successfully!!`); 
+      router.push(`/item?message=${encodeURIComponent(item.item)} Created Successfully!!`); 
     })
     .catch(error => {
       console.log(error);
@@ -122,7 +125,7 @@ export default function CreateItem() {
                 <form className="filter items-center gap-2">
                   <span>Item Type</span>
                   <input className="btn btn-square" type="reset" value="×"/>
-                  <input className="btn" type="radio" name="frameworks" aria-label="Goods" value={"Goods"} onClick={handleItemType}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Goods" value={"Goods"} onClick={handleItemType} ref={firstFocus}/>
                   <input className="btn" type="radio" name="frameworks" aria-label="Service" value={"Service"} onClick={handleItemType}/>
                 </form>
               </div>
@@ -130,88 +133,82 @@ export default function CreateItem() {
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
                     <span className="label">Name</span>
-                    <input tabIndex={0} type="text" placeholder="item"
-                    onChange={(e) => setItem((prev) => ({...prev, "name":e.target.value}))}/>
+                    <input tabIndex={0} type="text" placeholder="Product Name"
+                    onChange={(e) => setItem((prev) => ({...prev, "item":e.target.value}))}/>
                   </label>
                 </div>
                 
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
-                    <span className="label">Display Name</span>
-                    <input type="text" placeholder="Display Name" 
-                    onChange={(e) => setItem((prev) => ({...prev, "display_name":e.target.value}))}/>
+                    <span className="label">Item Code</span>
+                    <input type="text" placeholder="Code that specify the product" 
+                    onChange={(e) => setItem((prev) => ({...prev, "code":e.target.value}))}/>
                   </label>
                 </div>
-                
-                <div>
+               
+                <div className='col-span-2'>
                   <label className="input w-[50%]">
-                    <span className="label">Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setItem((prev) => ({...prev, "contact":e.target.value}))}/>
+                    <span className="label">HSN Code</span>
+                    <input type="text" 
+                    onChange={(e) => setItem((prev) => ({...prev, "hsn_code":e.target.value}))}/>
                   </label>
                 </div>
-                <div>
-                  <label className="input w-[60%]">
-                    <span className="label">Alternate Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setItem((prev) => ({...prev, "alt_contact":e.target.value}))}/>
+
+              <div className='col-span-2'>
+                <form className="filter items-center gap-2">
+                  <span>Units</span>
+                  <input className="btn btn-square" type="reset" value="×"/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Nos" value={"nos"} onClick={handleUnitType}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Set" value={"set"} onClick={handleUnitType}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Pcs" value={"pcs"} onClick={handleUnitType}/>
+                </form>
+              </div>
+              
+              <div className='col-span-2'>
+                <form className="filter items-center gap-2">
+                  <span>Is Item Taxable?</span>
+                  <input className="btn btn-square" type="reset" value="×"/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Taxable" value={"Taxable"} onClick={handleIsTaxable}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Non-Taxable" value={"Non-Taxable"} onClick={handleIsTaxable}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="Non-GST Supply" value={"Non-GST Supply"} onClick={handleIsTaxable}/>
+                </form>
+              </div>
+              
+              <div className='col-span-2'>
+                <form className="filter items-center gap-2">
+                  <span>Tax Rate Slab</span>
+                  <input className="btn btn-square" type="reset" value="×"/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="GST0-[0%]" value={0} onClick={handleTaxRate}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="GST5-[5%]" value={5} onClick={handleTaxRate}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="GST12-[12%]" value={12} onClick={handleTaxRate}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="GST18-[18%]" value={18} onClick={handleTaxRate}/>
+                  <input className="btn" type="radio" name="frameworks" aria-label="GST28-[28%]" value={28} onClick={handleTaxRate}/>
+                </form>
+              </div>
+              
+              <div className='col-span-2'>
+                  <label className="input w-[50%]">
+                    <span className="label">Purchase Rate</span>
+                    <input tabIndex={0} type="text"
+                    onChange={(e) => setItem((prev) => ({...prev, "purchase_rate":parseFloat(e.target.value)}))}/>
                   </label>
-                </div>
+                </div>              
+
+              <div className='col-span-2'>
+                  <label className="input w-[50%]">
+                    <span className="label">Sales Rate</span>
+                    <input tabIndex={0} type="text"
+                    onChange={(e) => setItem((prev) => ({...prev, "sales_rate":parseFloat(e.target.value)}))}/>
+                  </label>
+                </div>              
                 
-                <div className='col-span-2'>
-                  <label className="input validator w-[50%]">
-                    <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <g
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        strokeWidth="2.5"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                      </g>
-                    </svg>
-                    <input type="email" placeholder="mail@email.com" 
-                    onChange={(e) => setItem((prev) => ({...prev, "email":e.target.value}))}/>
-                  </label>
-                  <div className="validator-hint hidden">Enter valid email address</div>
-                </div>
+
                 
-                <div className='col-span-2 -mb-7'>
-                  <p className='text-sm'>*Check to enable GST Status (Registered or Not Registered)</p>
-                </div>
-
-                <div>
-                  <label className="input w-[60%]">
-                    {/* <span className="label">GSTIN</span> */}
-                    <span className='label'>
-                      <label className="swap pe-2">
-                        <input type="checkbox" checked={gstStatus} onChange={handleGSTStatus}/>
-                        <div className="swap-on bg-green-400 rounded-lg text-black font-bold py-2 px-4">GST Registered</div>
-                        <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
-                      </label>
-                    </span>
-                    <input type="text" placeholder="99ABCDE9999F1ZX" id='gstInput' disabled={!gstStatus} onChange={handleGSTInput} onFocus={handleGSTInput} onBlur={handleGSTInput}/>
-                  </label>
-                </div>
-
-                <div></div>
-                {/* <div></div> */}
-
-                <div className='col-span-2'>
-                  <label className="input w-[30%]">
-                    <span className="label">Opening Balance</span>
-                    <input type="text" defaultValue={0.00} 
-                    onChange={(e) => setItem((prev) => ({...prev, "opening_balance":e.target.value}))}/>
-                  </label>
-                </div>
-
-                <div>
-                  <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
-                  <button className='btn btn-ouline ms-4' onClick={()=>{window.location.reload()}}>Cancel</button>
-                  <button className='btn btn-ouline ms-4' onClick={showData}>showItem</button>
-                </div>
+              <div>
+                <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
+                <button className='btn btn-ouline ms-4' onClick={()=>{window.location.reload()}}>Cancel</button>
+                <button className='btn btn-ouline ms-4' onClick={showData}>showItem</button>
+              </div>
 
 
 

@@ -27,6 +27,7 @@ export default function Sidebar() {
                     duration-300 z-10
                     ${isOpen?"w-2/3":"w-0"}
                     lg: w-[12%] lg:block
+                    sm: w[5%]
                     `}>
         {/* Sidebar content */}
         <div className="flex flex-col items-start ps-5">

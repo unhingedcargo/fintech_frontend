@@ -14,7 +14,7 @@ export default function Items() {
   const [loader, setLoader] = useState(false);
 
   // const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all"
-  const ITEM_URI = "http://localhost:8000/api/item/all"
+  const ITEM_URI = "http://localhost:8000/api/item/all";
 
   useEffect(() => {
     if(message) {
@@ -65,7 +65,7 @@ export default function Items() {
         
         <div className="flex flex-row align-middle">
 
-          <h1 className='text-2xl mb-4'>All Customers{loader && (<span className="loading loading-spinner loading-xl"></span>)}</h1>
+          <h1 className='text-2xl mb-4 me-4'>All Items{loader && (<span className="loading loading-spinner loading-xl ms-4"></span>)}</h1>
           <Link href="/item/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
 
@@ -83,7 +83,7 @@ export default function Items() {
             </thead>
             <tbody>
               {items.map((row, index) => (
-                <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`customer/${row.item_id}`))}>
+                <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`item/${row.item_id}`))}>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[5%] text-center'>{index+1}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.item}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.code}</td>

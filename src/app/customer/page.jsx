@@ -17,7 +17,7 @@ export default function Customer() {
   // const message = searchParams.get('message');
 
   // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-  const CUSTOMER_URI = "http://localhost:8000/api/customer/all"
+  const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
 
   useEffect(() => {
     if(message) {
@@ -54,10 +54,10 @@ export default function Customer() {
   return (
     <>
     <div className='flex'>
-      <div className="w-full md:w-64">
+      <div className="w-full sm:w-[12%]">
         <Sidebar />
       </div>
-      <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
+      <div className='flex-1 ms-5 me-8 my-5 overflow-auto pt-20'>
 
         <div className='w-[80%] mb-5'>
               {alert &&
@@ -72,7 +72,7 @@ export default function Customer() {
         
         <div className="flex flex-row align-middle">
 
-          <h1 className='text-2xl mb-4'>All Customers{loader && (<span className="loading loading-spinner loading-xl"></span>)}</h1>
+          <h1 className='text-2xl mb-4'>All Customers{loader && (<span className="loading loading-spinner loading-xl ms-4"></span>)}</h1>
           <Link href="/customer/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
 

@@ -10,19 +10,35 @@ import 'react-datepicker/dist/react-datepicker.css';
 export default function CreateEstimate() {
   const [selectDate, setDate] = useState(new Date());
   const [jobno, setJobno] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [items, setItems] = useState([]);
   const [custID, setCustID] = useState("");
   const [grandtotal, setgrandtotal] = useState();
   const [advance, setAdvance] = useState(0);
   const [discount, setDiscount] = useState(0);
+  const [alert, setAlert] = useState(false);
+  const [loader, setLoader] = useState(false);
+  
 
   useEffect(() => {
-    const URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno"
+    setLoader(true);
+    const NEXT_JOBNO_URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno";
+    const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
+    const ITEM_URI = "http://localhost:8000/api/item/all";
     const nextjob = async () => {
       try{
-        const res = await fetch(URI);
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setJobno(data);
+        const jobres = await fetch(NEXT_JOBNO_URI);
+        const nextjobno = await jobres.json();
+        setJobno(nextjobno);
+        
+        const custRes = await fetch(CUSTOMER_URI);
+        const custData = await custRes.json();
+        setCustomers(custData);
+        
+        const itemRes = await fetch(ITEM_URI);
+        const itemData = await itemRes.json();
+        setItems(itemData);
+
       } catch (err) {
         console.error(err);
       }
@@ -71,6 +87,17 @@ export default function CreateEstimate() {
     window.location.reload();
   };
 
+  const handleCustomer = (e) => {
+    const slug = e.target.value;
+    const SELECT_CUSTOMER_URI = `http://localhost:8000/api/contact/${slug}`;
+    const fetchCustomer = async () => {
+      const res = await fetch(SELECT_CUSTOMER_URI);
+      const data = await res.json();
+      setCustomers(data);
+      console.log(customers);
+    }
+    fetchCustomer();
+  }
 
 
   return (
@@ -90,10 +117,16 @@ export default function CreateEstimate() {
             <div className="card-body w-[80%]">
               {/* grid starts */}
               <div className="grid grid-cols-12 gap-6">
+                
                 <div className='col-span-6'>
                   <label className="input w-[90%]">
                     <span className="label">Customer Name</span>
-                    <input type="text" placeholder="Cash Sale" />
+                    <input type="text" placeholder="Cash Sale" list="customerList" onBlur={handleCustomer}/>
+                    <datalist id='customerList'>
+                      {customers.map((customer) => 
+                        <option value={customer.display_name}></option>
+                      )}
+                    </datalist>
                   </label>
                 </div>
                 {/* <div className='col-span-6'></div> */}
@@ -102,6 +135,10 @@ export default function CreateEstimate() {
                     <span className="label">Contact No.</span>
                     <input type="text" placeholder="XXXXXX-XXXXXX" maxLength={15}/>
                   </label>
+                </div>
+
+                <div className="col-span-12 border-2">
+
                 </div>
 
                 <div className="col-span-4 mt-5">

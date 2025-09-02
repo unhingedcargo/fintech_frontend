@@ -9,6 +9,8 @@ import React, { useEffect, useState } from 'react'
 export default function EstimatePage() {
   const[estimates, setEstimates] = useState([]);
   const router = useRouter();
+  const [alert, setAlert] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   // useEffect(()=>{
   //   await fetch("http://localhost:8000/api/jobcard")
@@ -19,8 +21,10 @@ export default function EstimatePage() {
 
   useEffect(() => {
     // fetch data inside async function
-    const JOBCARD_URI = "https://fintech-backend-08wx.onrender.com/api/jobcard"
+    // const JOBCARD_URI = "https://fintech-backend-08wx.onrender.com/api/jobcard";
     const fetchEstimates = async () => {
+      const JOBCARD_URI = "http://localhost:8000/api/jobcard";
+      setLoader(true);
       try {
         const res = await fetch(JOBCARD_URI);
         if (!res.ok) throw new Error("Failed to fetch");
@@ -28,6 +32,8 @@ export default function EstimatePage() {
         setEstimates(data);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -43,15 +49,15 @@ export default function EstimatePage() {
       </div>
       <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
         <div className="flex flex-row align-middle">
-          <h1 className='text-2xl mb-4'>Estimate page</h1>
+          <h1 className='text-2xl mb-4'>Estimate page{loader && (<span className="loading loading-spinner loading-xl ms-4"></span>)}</h1>
           <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
-          <table className='border border-collapse border-blue-400 text-base mt-8 w-[90%]'>
+          <table className='border border-collapse border-blue-400 text-base mt-8 w-full'>
             <thead className='bg-blue-950'>
-              <tr className=''>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[5%]'>#</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Estimate No.</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Date</th>
+              <tr>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[3%]'>#</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[11%]'>Estimate No.</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[11%]'>Date</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[20%]'>Customer</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[15%]'>Contact</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Value</th>

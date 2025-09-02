@@ -69,7 +69,6 @@ export default function CustomerDetails(params) {
     })
     .then(result => {
       setAlert({show:true, type:"success", message:`${customer[0].display_name} Updated Successfully..!!`});
-      console.log(customer);
       setTimeout(() => {
         setAlert({show:false, type:"success", message:""});
       }, 3000);
@@ -87,7 +86,7 @@ export default function CustomerDetails(params) {
   }
 
   const deleteData = async () => {
-
+    setLoader(true);
     // const DELETE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/delete/${slug}`
     const DELETE_CUSTOMER_URI = `http://localhost:8000/api/contact/delete/${slug}`
     const deleteName = customer[0].display_name;
@@ -102,10 +101,10 @@ export default function CustomerDetails(params) {
       if(!res.ok){
         throw new Error(`HTTP error! status: ${res.status}`)
       }
-      router.push(`/customer?message=${encodeURIComponent(deleteName)} Deleted Successfully`); 
+      router.push(`/customer?message=${deleteName} Deleted Successfully`); 
     } catch(error){
       console.log("DELETE ERROR! : ", error.message, error);
-      router.push(`/customer?message=Something Went Wrong!`); 
+      router.push(`/customer?message=Something Went Wrong!`);
     } finally {
       setLoader(false);      
     }
