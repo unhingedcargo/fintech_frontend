@@ -139,7 +139,7 @@ export default function CustomerDetails(params) {
             <div className="flex flex-row align-middle">
 
             {customer.map((row, index) => 
-            <div className="card card-border bg-base-100 w-[80%]" key={index}>
+            <div className="card card-border bg-base-100 w-full" key={index}>
               <div className="card-body">
                 <div className='flex flex-row justify-between'>
                   <h2 className="card-title mb-5 text-4xl">{row.display_name}</h2>
@@ -254,7 +254,7 @@ export default function CustomerDetails(params) {
                     </div>
                   </div>
                 </dialog>
-                <button className="btn btn-soft" onClick={() => router.push("/customer")}>Back</button>
+                <button className="btn btn-soft" onClick={() => router.back()}>Back</button>
                 </div>
               </div>
             </div>

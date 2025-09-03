@@ -5,19 +5,19 @@ import { FaHome, FaLandmark, FaRupeeSign } from "react-icons/fa";
 import { MdProductionQuantityLimits } from 'react-icons/md';
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [isSales, setIsSales] = useState(false);
   const [isPurchase, setIsPurchase] = useState(false);
   
   return (
     <>
-    <div className="flex pt-20">
-      <button
+     <div className="flex pt-20">
+      {/* <button
         className="lg:hidden fixed top-5 left-5 z-20 bg-gray-900 text-white px-3 py-2 rounded-md"
         onClick={() => setIsOpen(!isOpen)}
       >
         ☰
-      </button>
+      </button> */}
       {/* Sidebar */}
       <div
         // Conditional class based on isOpen 
@@ -25,9 +25,7 @@ export default function Sidebar() {
         className={`bg-gray-900 text-white 
                     fixed h-screen transition-all overflow-y-auto
                     duration-300 z-10
-                    ${isOpen?"w-2/3":"w-0"}
-                    lg: w-[12%] lg:block
-                    sm: w[5%]
+                    lg:w-[12%] sm:w-[20%]
                     `}>
         {/* Sidebar content */}
         <div className="flex flex-col items-start ps-5">

@@ -2,15 +2,18 @@
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import Sidebar from '@/components/Sidebar';
-import { MdKeyboardBackspace } from "react-icons/md";
+import { MdKeyboardBackspace, MdOutlineCreate } from "react-icons/md";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useRouter } from 'next/navigation';
 
 
 export default function CreateEstimate() {
   const [selectDate, setDate] = useState(new Date());
   const [jobno, setJobno] = useState("");
   const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [newCustomer, setNewCustomer] = useState({"customer":"", "mobile":""});
   const [items, setItems] = useState([]);
   const [custID, setCustID] = useState("");
   const [grandtotal, setgrandtotal] = useState();
@@ -18,37 +21,53 @@ export default function CreateEstimate() {
   const [discount, setDiscount] = useState(0);
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
+  const router = useRouter();
+  const [orders, setOrders] = useState([
+    { id: Date.now(), 
+      item_id:"",
+      item: "", 
+      desc: "", 
+      qty: 1, 
+      rate: 0, 
+      total:0, 
+      tax_rate: 0, 
+      tax_amount:0, 
+      amount:0 },
+  ]);
   
-
   useEffect(() => {
     setLoader(true);
-    const NEXT_JOBNO_URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno";
+    const NEXT_JOBNO_URI = "http://localhost:8000/api/nextjobno";
     const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
     const ITEM_URI = "http://localhost:8000/api/item/all";
-    const nextjob = async () => {
-      try{
-        const jobres = await fetch(NEXT_JOBNO_URI);
-        const nextjobno = await jobres.json();
-        setJobno(nextjobno);
-        
-        const custRes = await fetch(CUSTOMER_URI);
-        const custData = await custRes.json();
-        setCustomers(custData);
-        
-        const itemRes = await fetch(ITEM_URI);
-        const itemData = await itemRes.json();
-        setItems(itemData);
+    
+    const fetchAllData = async () => {
+    try {
+      
+      const [nextJobRes, custRes, itemRes] = await Promise.all([
+        fetch(NEXT_JOBNO_URI),
+        fetch(CUSTOMER_URI),
+        fetch(ITEM_URI),
+      ]);
 
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    nextjob();
-  }, [])
+      const [nextJob, custData, itemData] = await Promise.all([
+        nextJobRes.json(),
+        custRes.json(),
+        itemRes.json(),
+      ]);
 
-  const [orders, setOrders] = useState([
-    { id: Date.now(), item: "", desc: "", qty: 1, rate: 0, tax_rate: 0 },
-  ]);
+      setJobno(nextJob);
+      setCustomers(custData);
+      setItems(itemData);
+        
+    } catch(err) {
+      console.log("Error Fetching Data", err)
+    } finally {
+      setLoader(false);
+    }
+  }
+  fetchAllData();
+},[])
 
 
 // Handle input changes
@@ -64,19 +83,9 @@ export default function CreateEstimate() {
   const addRow = () => {
     setOrders([
       ...orders,
-      { id: Date.now(), item: "", desc: "", qty: 1, rate: 0, tax_rate: 0 },
+      { id: Date.now(), item_id:"", item: "", desc: "", qty: 1, rate: 0, total:0, tax_rate: 0, tax_amount:0, amount:0 },
     ]);
   };
-//   const addNewRow = () => {
-//     let table = document.getElementById('item-table');
-//     const lastRow = table.querySelector('tbody tr:last-child');
-//     const newRow = document.createElement('tr');
-
-//     newRow.innerHTML = lastRow.innerHTML;
-
-//     table.querySelector('tbody').appendChild(newRow);
-
-// }
 
    // Delete row by id
   const deleteRow = (id) => {
@@ -87,26 +96,31 @@ export default function CreateEstimate() {
     window.location.reload();
   };
 
-  const handleCustomer = (e) => {
-    const slug = e.target.value;
-    const SELECT_CUSTOMER_URI = `http://localhost:8000/api/contact/${slug}`;
-    const fetchCustomer = async () => {
-      const res = await fetch(SELECT_CUSTOMER_URI);
-      const data = await res.json();
-      setCustomers(data);
-      console.log(customers);
+  const findCustomer = (e) => {
+    const name = e.target.value;
+    const selectCustomer = customers.find((c) => c.display_name === name);
+    if (selectCustomer) {
+      setSelectedCustomer(selectCustomer);
+      setNewCustomer({"customer":"", "mobile":""});
+    } else {
+      setSelectedCustomer(null);
+      setNewCustomer(prev => ({...prev, name}))
     }
-    fetchCustomer();
   }
 
 
   return (
     <>
+        {loader && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <span className="loading loading-spinner loading-xl"></span>
+        </div>
+      )}
       <div className='flex'>
         <div className="w-full md:w-64">
           <Sidebar />
         </div>
-        <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
+        <main className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
             <h1 className='text-2xl mb-4'>New Estimate</h1>
             <Link href="/estimate" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>
@@ -114,32 +128,58 @@ export default function CreateEstimate() {
           </div>
           {/* Card starts from here */}
           <div className="card w-full px-15 pt-5 mt-5 bg-base-100 card-md shadow-sm">
-            <div className="card-body w-[80%]">
+            <div className="card-body w-full">
               {/* grid starts */}
               <div className="grid grid-cols-12 gap-6">
                 
-                <div className='col-span-6'>
-                  <label className="input w-[90%]">
+                <div className='col-span-12'>
+                  <label className="input w-[50%]">
                     <span className="label">Customer Name</span>
-                    <input type="text" placeholder="Cash Sale" list="customerList" onBlur={handleCustomer}/>
+                    <input type="text" placeholder="Cash Sale" list="customerList" onChange={findCustomer} onBlur={findCustomer}/>
                     <datalist id='customerList'>
                       {customers.map((customer) => 
-                        <option value={customer.display_name}></option>
+                        <option value={customer.display_name} key={customer.display_name}></option>
                       )}
                     </datalist>
                   </label>
                 </div>
                 {/* <div className='col-span-6'></div> */}
-                <div className='col-span-6'>
-                  <label className="input w-[90%]">
-                    <span className="label">Contact No.</span>
-                    <input type="text" placeholder="XXXXXX-XXXXXX" maxLength={15}/>
+                
+                {selectedCustomer && 
+                  <div className="col-span-12 border-2 rounded-sm py-6 ps-3">
+                    <div className='grid grid-cols-2 gap-6 relative'>
+                      <div className="absolute -top-5 right-2 cursor-pointer">
+                        <Link href={`/customer/${selectedCustomer.cust_id}`} className='btn'>
+                          <MdOutlineCreate fontSize={24} color="white"/>
+                        </Link>
+                      </div>
+                      <div>
+                        Customer : <span className='font-medium text-lg text-amber-400'>{selectedCustomer.company_name}</span>
+                      </div>
+                      
+                      <div>
+                        Contact : <span className='font-medium text-lg text-amber-400'>{selectedCustomer.contact}</span>
+                      </div>
+                      
+                      <div>
+                        GSTIN : <span className='font-medium text-lg text-amber-400'>{selectedCustomer.gstin}</span>
+                      </div>
+
+                      <div>
+                        cust_ID : <span className='font-medium text-lg text-amber-400'>{selectedCustomer.cust_id}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                {!selectedCustomer && newCustomer.name &&
+                  <div className='col-span-12'>
+                  <label className="input w-[50%]">
+                    <span className="label">Contact Number</span>
+                    <input type="text" onChange={findCustomer} maxLength={15} onBlur={findCustomer}/>
                   </label>
                 </div>
-
-                <div className="col-span-12 border-2">
-
-                </div>
+                }
 
                 <div className="col-span-4 mt-5">
                   <label className="input w-[90%]">
@@ -173,36 +213,81 @@ export default function CreateEstimate() {
                     <thead className='bg-blue-950'>
                       <tr className='text-base'>
                         {/* <th className='border-2 border-blue-400 px-4 py-3 font-normal w-[02%]'>#</th> */}
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-start w-[40%]'>Particulars & Details</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-start w-[35%]'>Particulars & Details</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>HSN Code</th>
                         <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>Qty</th>
                         <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>Rate</th>
                         <th className='border-2 border-blue-400 px-4 py-3 font-normal text-center w-[15%]'>Tax</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[20%]'>Amount</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[15%]'>Amount</th>
                         <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[5%]'>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {orders.map((order) => (
-                      <tr className='text-base' key={order.id}>
+                      {orders.map((order, index) => (
+                      <tr className='text-base' key={index+1}>
                         {/* <td className='border-2 border-blue-400 px-4 py-4'>1</td> */}
                         <td className='border-2 border-blue-400 px-4 py-4'>
-                          <input type="text" className='input border-2 border-gray-600 h-8 rounded-md w-full' list='products' 
-                          onChange={(e) => handleOrderChange(order.id, "item", e.target.value) } />
+                          <input type="text" className='input border-2 border-gray-600 h-8 rounded-md w-full' list='products'
+                          value={order.item}
+                          onChange={(e) => {
+                            const selected = items.find((it) => it.item === e.target.value);
+                            if (selected) {
+                              setOrders((prevOrder) => 
+                                prevOrder.map((o) =>
+                                  o.id === order.id
+                                  ?{...o,
+                                    item: selected.item,
+                                    hsn_code : selected.hsn_code,
+                                    qty: Number(1).toFixed(2),
+                                    rate : selected.sales_rate,
+                                    total: selected.sales_rate,
+                                    tax_rate: selected.tax_rate,
+                                    tax_amount: (selected.sales_rate*selected.tax_rate)/100,
+                                    amount:(selected.sales_rate) + ((selected.sales_rate*selected.tax_rate)/100)
+                                  }
+                                  : o                                  
+                              )
+                            )
+                            } else {
+                              setOrders((prevOrder) =>
+                                prevOrder.map((o) =>
+                                  o.id === order.id ? { ...o, item: e.target.value } : o
+                                ))
+                            }
+                            }}
+                            />
                           <datalist id='products'>
-                            <option value="Visiting Cards"></option>
-                            <option value="Bill Book"></option>
-                            <option value="Flyers"></option>
+                            {items.map((item) => 
+                              <option value={item.item} key={item.item_id}></option>
+                            )}
                           </datalist>
-                          <textarea className='border-2 border-gray-600 rounded-md mt-3 w-full' rows={2} name="" id=""></textarea>
-                        </td>
 
+                          <textarea className='border-2 border-gray-600 rounded-md mt-3 w-full text-sm p-1.5' rows={2} name="" id="" 
+                          onChange={(e) => handleOrderChange(order.id, "desc", e.target.value)}></textarea>
+                        </td>
+                            {/* HSN INPUT */}
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
-                          <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' />
+                          <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-center'
+                          value={order.hsn_code || ""}
+                          onChange={(e) => {handleOrderChange(order.id, "qty", e.target.value)}}
+                          />
+                        </td>
+                        
+                          {/* Quantity Input */}
+                        <td className='border-2 border-blue-400 px-4 py-4 align-top'>
+                          <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' 
+                          defaultValue={Number(1).toFixed(2)}
+                          onChange={(e) => handleOrderChange(order.id, "qty", Number(e.target.value))}
+                          />
                           <p className='text-right'>nos</p>
                         </td>
 
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
-                          <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' />
+                          <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' 
+                          value={order.rate}
+                          onChange={(e) => handleOrderChange(order.id, "rate", Number(e.target.value))}
+                          
+                          />
                         </td>
 
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
@@ -238,6 +323,7 @@ export default function CreateEstimate() {
               <div className="justify-start card-actions mt-5">
                 <button className="btn btn-primary" onClick={addRow}>Add Row</button>
                 <button className="btn btn-primary" onClick={clearAll}>Clear</button>
+                <button className="btn btn-primary" onClick={() => console.log(orders) }>Show Order</button>
               </div>
 
             <div className="grid grid-cols-12 gap-6">
@@ -270,7 +356,7 @@ export default function CreateEstimate() {
 
 
         {/* body div ends */}
-        </div> 
+        </main> 
         {/* main div ends */}
     </div>
     </>

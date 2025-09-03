@@ -22,6 +22,7 @@ export default function Navbar() {
           <Link className='text-3xl p-5 text-white hover:text-amber-400' href='/'>Navbar</Link>
           <ul className='flex flex-row justify-center items-center gap-5 text-white'>
             <li><Link className='text-lg rounded-full border-2 border-gray-900 hover:border-2 hover:border-amber-400 hover:text-amber-400 focus:border-2 px-6 py-3 active:bg-amber-400 active:text-black' href="/">Home</Link></li>
+            <li><Link className='text-lg rounded-full border-2 border-gray-900 hover:border-2 hover:border-amber-400 hover:text-amber-400 focus:border-2 px-6 py-3 active:bg-amber-400 active:text-black' href="/estimate/create-new">Create Estimate</Link></li>
             <li><Link className='text-lg rounded-full border-2 border-gray-900 hover:border-2 hover:border-amber-400 hover:text-amber-400 focus:border-2 px-6 py-3 active:bg-amber-400 active:text-black' href="/about">About</Link></li>
             <li><Link className='text-lg rounded-full border-2 border-gray-900 hover:border-2 hover:border-amber-400 hover:text-amber-400 focus:border-2 px-6 py-3 active:bg-amber-400 active:text-black' href="">Contact</Link></li>
           
