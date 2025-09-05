@@ -22,9 +22,7 @@ export default function CreateEstimate() {
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
   const router = useRouter();
-  const [orderAmount, setOrderAmount] = useState([{
-    subtotal:0, discount:0, total_tax_amount:0, amount:0, advance:0
-  }]);
+  
   const [orders, setOrders] = useState([
     { id: Date.now(), 
       item_id:"",
@@ -45,13 +43,13 @@ export default function CreateEstimate() {
     const tax = Number(o.tax_amount) || 0;
     const amt = Number(o.amount) || tot + tax;
 
-    acc.totalAmount += tot;
+    acc.subTotal += tot;
     acc.totalTax += tax;
     acc.grandTotal += amt;
 
     return acc;
   },
-  {totalAmount: 0, totalTax: 0, grandTotal:0}
+  {subTotal: 0, totalTax: 0, grandTotal:0}
 );
   
   useEffect(() => {
@@ -98,10 +96,25 @@ const handleOrderChange = (id, field, value) => {
       let updated = { ...o, [field]: value };
 
       // If qty or rate changes, recalc amount
-      if (field === "qty" || field === "rate") {
-        updated.total = Number(updated.qty) * Number(updated.rate);
-      }
+      // if (field === "qty" || field === "rate") {
+      //   updated.total = (Number(updated.qty) * Number(updated.rate));
+      // }
+      // return updated;
+
+      const qty = Number(updated.qty) || 0;
+      const rate = Number(updated.rate) || 0;
+      const taxRate = Number(updated.tax_rate) || 0;
+
+      const lineTotal = qty * rate; // subtotal before tax
+      const taxAmount = (lineTotal * taxRate) / 100;
+      const amount = lineTotal + taxAmount;
+
+      updated.total = lineTotal;
+      updated.tax_amount = taxAmount;
+      updated.amount = amount;
+
       return updated;
+
     })
 
   );
@@ -144,6 +157,58 @@ const handleOrderChange = (id, field, value) => {
     }
   }
 
+  const saveEstimate = async () => {
+    setLoader(true);
+    const SAVE_ESTIMATE_URI = `http://localhost:8000/api/estimate/create`
+    const payLoad = {
+      "orders" : orders.map((o, index) => ({
+        "item_no" : index+1,
+        "item_id" : o.item_id,
+        "item" : o.item,
+        "desc" : o.desc,
+        "qty" : Number(o.qty),
+        "rate" : Number(o.rate),
+        "total" : Number(o.total),
+        "tax_rate" : Number(o.tax_rate),
+        "tax_amount" : Number(o.tax_amount),
+        "amount" : Number(o.amount),
+
+      })),
+      "jobno" : jobno,
+      "job_date" : selectDate.toISOString().split("T")[0],
+      "cust_id" : selectedCustomer?selectedCustomer.cust_id:0,
+      "taxable_amount" : orderTotals.subTotal,
+      "tax_amount" : orderTotals.totalTax,
+      "discount" : Number(discount) || 0,
+      "grandtotal" : Number(orderTotals.grandTotal),
+      "advance" : Number(advance) || 0
+    }
+    console.log(payLoad);
+    try{
+      const res = await fetch(SAVE_ESTIMATE_URI, {
+        method:"POST",
+        headers:{"Content-Type" : "application/json"},
+        body: JSON.stringify(payLoad),
+      });
+      
+      if(!res.ok) throw new Error("Failed to Fetch!");
+
+      const data = await res.json();
+
+      console.log("Estimate Saved",data);
+
+      router.push("/estimate");
+
+    }catch(err) {
+      console.log("Fetching Error! ", err);
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 3000);
+    }finally {
+      setLoader(false);
+    }
+  }
 
   return (
     <>
@@ -157,7 +222,7 @@ const handleOrderChange = (id, field, value) => {
           <Sidebar />
         </div>
         <main className='flex-1 mx-8 my-5 overflow-auto pt-20'>
-          <div className="flex flex-row align-middle">
+          <div className="flex flex-row items-center">
             <h1 className='text-2xl mb-4'>New Estimate</h1>
             <Link href="/estimate" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>
             <MdKeyboardBackspace fontSize={24} color="white"/></Link>
@@ -182,11 +247,11 @@ const handleOrderChange = (id, field, value) => {
                 {/* <div className='col-span-6'></div> */}
                 
                 {selectedCustomer && 
-                  <div className="col-span-12 border-2 rounded-sm py-6 ps-3">
+                  <div className="col-span-12 border-2 rounded-2xl py-4 ps-3 bg-gray-800 text-white">
                     <div className='grid grid-cols-2 gap-6 relative'>
-                      <div className="absolute -top-5 right-2 cursor-pointer">
-                        <Link href={`/customer/${selectedCustomer.cust_id}`} className='btn'>
-                          <MdOutlineCreate fontSize={24} color="white"/>
+                      <div className="absolute -top-3 right-1 cursor-pointer p-2">
+                        <Link href={`/customer/${selectedCustomer.cust_id}`} className='btn bg-amber-50 rounded-lg'>
+                          <MdOutlineCreate fontSize={24} color="green"/>
                         </Link>
                       </div>
                       <div>
@@ -242,16 +307,16 @@ const handleOrderChange = (id, field, value) => {
                   <h3 className='text-lg text-center border-t-2 border-b-2 py-2'>Item Table</h3>
 
                   <table className="min-w-full border border-collapse border-blue-400 text-lg mt-4" id='item-table'>
-                    <thead className='bg-blue-950'>
+                    <thead className='dark:bg-blue-950'>
                       <tr className='text-base'>
                         {/* <th className='border-2 border-blue-400 px-4 py-3 font-normal w-[02%]'>#</th> */}
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-start w-[35%]'>Particulars & Details</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>HSN Code</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>Qty</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[10%]'>Rate</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-center w-[15%]'>Tax</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[15%]'>Amount</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-normal text-end w-[5%]'>Action</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-start w-[35%]'>Particulars & Details</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>HSN Code</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>Qty</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>Rate</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-center w-[15%]'>Tax</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[15%]'>Amount</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[5%]'>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -330,6 +395,7 @@ const handleOrderChange = (id, field, value) => {
                             handleOrderChange(order.id, "tax_rate", Number(e.target.value))
                             const newTaxAmount = Number(order.total) * Number(e.target.value) / 100;
                             handleOrderChange(order.id, "tax_amount", newTaxAmount);
+                            handleOrderChange(order.id, "amount", Number(order.amount)+Number(newTaxAmount));
                           }}
                           >
                             <option disabled={true}>Select Tax</option>
@@ -340,7 +406,7 @@ const handleOrderChange = (id, field, value) => {
                             <option value={18}>GST18</option>
                             <option value={28}>GST28</option>
                           </select>
-                        <p className='text-right'>{order.tax_amount || "selected tax"}</p>
+                        <p className='text-right'>Tax : {order.tax_amount || "0"}</p>
                         </td>
 
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
@@ -372,23 +438,40 @@ const handleOrderChange = (id, field, value) => {
 
               <div className="col-span-6 md:col-span-8"></div>
               <div className="col-span-6 md:col-span-4 bg-gray-700 text-white rounded-xl p-3">
-                <div className="grid grid-cols-2">
-                <div className='text-start text-md font-medium ps-4 py-2'>Sub Total</div>
-                <div className='text-right text-lg pe-4 py-2'>{orderTotals.totalAmount}</div>
-                <div className='text-start text-md font-medium ps-4 py-2'>Discount</div>
-                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
-                <div className='text-start text-md font-medium ps-4 py-2'>CGST</div>
-                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
-                <div className='text-start text-md font-medium ps-4 py-2'>SGST</div>
-                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
-                <div className='text-start text-md font-medium ps-4 py-2'>Total</div>
-                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
-                <div className='text-start text-md font-medium ps-4 py-2'>Advance</div>
-                <div className='text-right text-lg pe-4 py-2'>46546546546</div>
+                <div className="grid grid-cols-2 items-center">
+
+                  <div className='text-start text-md font-medium ps-4 py-2'>Sub Total</div>
+                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.subTotal}</div>
+
+                  <div className='text-start text-md font-medium ps-4 py-2'>Discount</div>
+                  <div className='text-right text-lg pe-4 py-2'>
+                    <input type="text" className='input h-8 w-25 text-right' maxLength={(orderTotals.subTotal.toString().length)}
+                    onChange={(e) => {
+                      setDiscount(Number(e.target.value));
+                    }}
+                    />
+                  </div>
+                  <div className='text-start text-md font-medium ps-4 py-2'>Tax Type</div>
+                  <div className='text-right text-lg pe-4 py-2'>TAXABLE</div>
+                  {/* TAX DETAILS if APPLICABLE */}
+                  <div className='text-start text-md font-medium ps-4 py-2'>SGST</div>
+                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.totalTax}</div>
+
+                  <div className='text-start text-md font-medium ps-4 py-2'>Grand Total</div>
+                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.grandTotal}</div>
+
+                  <div className='text-start text-md font-medium ps-4 py-2'>Advance</div>
+                  <div className='text-right text-lg pe-4 py-2'>
+                    <input type="text" className='input h-8 w-25 text-right' maxLength={(orderTotals.grandTotal.toString().length)}
+                    onChange={(e) => setAdvance(Number(e.target.value))}
+                    />                  
+                  </div>
 
                 </div>
               </div>
-              <div className="col-span-6"></div>
+              <div className="col-span-6">
+                <button className="btn btn-primary" onClick={saveEstimate}>Create</button>
+              </div>
               <div className="col-span-6"></div>
               <div className="col-span-6"></div>
 
