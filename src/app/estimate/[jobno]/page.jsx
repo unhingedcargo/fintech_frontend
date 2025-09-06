@@ -39,7 +39,7 @@ if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
         <p>{jobData.orders.map(item => (
           <tr key={item.id}>
-            {item.id} <br/>
+            {item.item_no} <br/>
             {item.item}<br/>
             {item.desc}<br/>
             {item.qty}<br/>
