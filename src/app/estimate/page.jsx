@@ -69,7 +69,7 @@ export default function EstimatePage() {
             </thead>
             <tbody>
               {estimates.map((row,index) => (
-                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimate/${row.jobno}`)}>
+                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimate/${row.jobslug}`)}>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>{index+1}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.job_date}</td>

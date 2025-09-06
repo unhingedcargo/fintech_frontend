@@ -160,6 +160,7 @@ const handleOrderChange = (id, field, value) => {
   const saveEstimate = async () => {
     setLoader(true);
     const SAVE_ESTIMATE_URI = `http://localhost:8000/api/estimate/create`
+    const slug = Date.now().toString() + jobno;
     const payLoad = {
       "orders" : orders.map((o, index) => ({
         "item_no" : index+1,
@@ -174,6 +175,7 @@ const handleOrderChange = (id, field, value) => {
         "amount" : Number(o.amount),
 
       })),
+      "jobslug": slug,
       "jobno" : jobno,
       "job_date" : selectDate.toISOString().split("T")[0],
       "cust_id" : selectedCustomer?selectedCustomer.cust_id:0,

@@ -43,6 +43,8 @@ export default function CreateItem() {
   const showData = () => {
     
     console.log(item);
+    const slug = Date.now().toString();
+    console.log(slug);
   }
   
   const handleTaxRate = (e) => {
