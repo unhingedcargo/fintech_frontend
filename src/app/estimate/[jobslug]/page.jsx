@@ -62,25 +62,28 @@ import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 export default function EstimateDetails({ params }) {
-  const { slug } = useParams(params);
+  const { jobslug } = useParams();
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
+      console.log("HI",jobslug);
       try {
-        const res = await fetch(`http://localhost:8000/api/estimate/${slug}`);
+        const res = await fetch(`http://localhost:8000/api/estimate/${jobslug}`);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const json = await res.json();
         setJobData(json);
+        console.log(json);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
-    if (slug) fetchData();
+    // if (slug) 
+    fetchData();
   }, []);
 
   if (loading) return <p>Loading...</p>;
