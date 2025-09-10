@@ -4,7 +4,7 @@
 
 
 // export default function EstimateDetails({params}) {
-//     const {jobno} = useParams(params);
+//     const {jobslug} = useParams(params);
 //     const [jobData, setJobData] = useState([]);
 //     const [loading, setLoading] = useState(true);
 //     const [error, setError] = useState(null);
@@ -13,7 +13,7 @@
 //   useEffect(() => {
 //     async function fetchData() {
 //       try {
-//         const res = await fetch(`http://localhost:8000/api/estimate/${jobno}`); 
+//         const res = await fetch(`http://localhost:8000/api/estimate/${jobslug}`); 
 //         if (!res.ok) {
 //           throw new Error(`Error ${res.status}`);
 //         }
@@ -26,8 +26,8 @@
 //       }
 //     }
 
-//     if (jobno) fetchData();
-//   }, [jobno]);
+//     if (jobslug) fetchData();
+//   }, [jobslug]);
 
 // if (loading) return <p>Loading...</p>;
 // if (error) return <p style={{ color: "red" }}>Error: {error}</p>;

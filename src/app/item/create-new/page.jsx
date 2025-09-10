@@ -113,7 +113,7 @@ export default function CreateItem() {
               <span>Contact Created Successfully!</span>
             </div>
           } 
-            <div className="grid grid-cols-12 gap-8 mt-5 items-center">
+            <div className="grid grid-cols-12 gap-8 mt-5 items-center p-5">
 
               <div className="col-span-2">
                   <span>Item Type</span>

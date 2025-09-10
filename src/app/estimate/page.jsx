@@ -30,6 +30,7 @@ export default function EstimatePage() {
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setEstimates(data);
+        console.log(data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -56,14 +57,14 @@ export default function EstimatePage() {
             <thead className='bg-blue-950'>
               <tr>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[3%]'>#</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[11%]'>Estimate No.</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[11%]'>Date</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[13%]'>Estimate No.</th>
+                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[13%]'>Date</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[20%]'>Customer</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[15%]'>Contact</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Value</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Outstanding</th>
                 <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Status</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[5%]'>View</th>
+                {/* <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[5%]'>View</th> */}
 
               </tr>
             </thead>
@@ -73,14 +74,14 @@ export default function EstimatePage() {
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>{index+1}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.job_date}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.cust_id}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.cust_id}</td>
+                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.customer}</td>
+                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.contact}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>{row.grandtotal}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>{row.grandtotal - row.advance}</td>
                   <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>
+                  {/* <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>
                     <Link href="" className='bg-gray-800 px-4 py-2 rounded-md hover:text-amber-400 hover:bg-gradient-to-b'>View</Link>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
               {/* <tr>

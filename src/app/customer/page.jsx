@@ -38,7 +38,9 @@ export default function Customer() {
         if(!res.ok) {
           throw new Error("Failed to fetch")
         };
-        setCustomers(await res.json());
+        const data = await res.json();
+        setCustomers(data);
+        console.log(data);
       } catch(err){
         console.log(err);
       } finally {

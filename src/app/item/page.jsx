@@ -69,28 +69,28 @@ export default function Items() {
           <Link href="/item/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link>
         </div>
 
-          <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8'>
+          <table className='min-w-full border border-collapse border-blue-400 text-lg mt-8 table table-zebra'>
             <thead className='dark:bg-blue-950'>
               <tr>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[5%]'>#</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>ITEM</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>ITEM CODE</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[35%]'>ITEM</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[20%]'>ITEM CODE</th>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>HSN CODE</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[5%]'>TAX RATES</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[15%]'>PURCHASE RATE</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[15%]'>SALES RATE</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>TAX RATES</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>PURCHASE RATE</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>SALES RATE</th>
               </tr>
             </thead>
             <tbody>
               {items.map((row, index) => (
                 <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`item/${row.item_id}`))}>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[5%] text-center'>{index+1}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.item}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.code}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[35%]'>{row.item}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[20%]'>{row.code}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.hsn_code}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[5%] text-center'>{row.taxrates}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[15%] text-center'>{row.purchase_rate}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[15%] text-end'>{row.sales_rate}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.taxrates}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.purchase_rate}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.sales_rate}</td>
               </tr>
               ))}
             </tbody>

@@ -460,14 +460,20 @@ const handleOrderChange = (id, field, value) => {
                   <div className='text-right text-lg pe-4 py-2'>{orderTotals.totalTax}</div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Grand Total</div>
-                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.grandTotal}</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-discount)>0 ? (orderTotals.grandTotal-discount) : 0}</div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Advance</div>
                   <div className='text-right text-lg pe-4 py-2'>
                     <input type="text" className='input h-8 w-25 text-right' maxLength={(orderTotals.grandTotal.toString().length)}
-                    onChange={(e) => setAdvance(Number(e.target.value))}
+                    onChange={(e) => {
+                      setAdvance(Number(e.target.value));
+                                            
+                    }}
                     />                  
                   </div>
+
+                  <div className='text-start text-md font-medium ps-4 py-2'>Balance</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-advance-discount)>0 ? (orderTotals.grandTotal-advance-discount) : 0}</div>
 
                 </div>
               </div>
