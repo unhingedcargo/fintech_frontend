@@ -88,7 +88,6 @@ export default function NewCustomer() {
         </div>
         <div className='flex-1 mx-8 my-5 overflow-auto pt-20'>
           <div className="flex flex-row align-middle">
-
             <h1 className='text-2xl mb-4'>Add New Customer</h1>
             {/* <Link href="/estimate/create-new" className='bg-blue-600 hover:bg-blue-300 text-white text-xl ms-auto me-0 rounded-md py-2 px-6'>New +</Link> */}
           </div>
@@ -101,7 +100,9 @@ export default function NewCustomer() {
               <span>Contact Created Successfully!</span>
             </div>
           } 
-            <div className="grid grid-cols-2 gap-8 mt-5">
+            <div className="grid grid-cols-2 gap-8 mt-5 items-center p-5">
+              
+
                 <div className='col-span-2'>
                   <label className="input w-[50%]">
                     <span className="label">Company Name</span>
