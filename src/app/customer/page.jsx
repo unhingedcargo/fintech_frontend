@@ -1,6 +1,7 @@
+"use client"
+
 export const dynamic = "force-dynamic";
 
-"use client"
 import Sidebar from '@/components/Sidebar'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation';
