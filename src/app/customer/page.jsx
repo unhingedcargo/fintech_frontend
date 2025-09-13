@@ -112,7 +112,9 @@ function CustomerComponent() {
 }
 
 export default function Customers() {
+  return (
   <Suspense fallback={<div>Loading...</div>}>
     <CustomerComponent />
   </Suspense>
+  )
 }

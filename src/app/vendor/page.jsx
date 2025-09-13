@@ -113,7 +113,9 @@ function VendorComponent() {
 }
 
 export default function Vendor() {
+  return (
   <Suspense fallback={<div>Loading...</div>}>
     <VendorComponent />
   </Suspense>
+  )
 }
