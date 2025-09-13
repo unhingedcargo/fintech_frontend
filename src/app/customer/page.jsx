@@ -16,8 +16,8 @@ export default function Customer() {
 
   // const message = searchParams.get('message');
 
-  // const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
-  const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
+  // const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
+  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
 
   useEffect(() => {
     if(message) {

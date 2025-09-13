@@ -18,10 +18,10 @@ export default function ItemDetails() {
 	const [isSales, setIsSales] = useState(true);
 
 	useEffect(() => {
-		// const ITEM_URI = `https://fintech-backend-08wx/api/item/${slug}`;
+		const ITEM_URI = `https://fintech-backend-08wx/api/item/${slug}`;
 		// if (!slug) return;
 
-		const ITEM_URI = `http://localhost:8000/api/item/${slug}`;
+		// const ITEM_URI = `http://localhost:8000/api/item/${slug}`;
 		setLoader(true);
 		const fetchItems = async () => {
 			try {
@@ -59,8 +59,8 @@ export default function ItemDetails() {
 
 
 	const updateData = async () => {
-		// const ITEM_UPDATE_URI = `https://fintech-backend-08wx.onrender.com/api/item/update/${slug}`;
-		const ITEM_UPDATE_URI = `http://localhost:8000/api/item/update/${slug}`;
+		const ITEM_UPDATE_URI = `https://fintech-backend-08wx.onrender.com/api/item/update/${slug}`;
+		// const ITEM_UPDATE_URI = `http://localhost:8000/api/item/update/${slug}`;
 		setLoader(true)
 		try {
 			const res = await fetch(ITEM_UPDATE_URI, {

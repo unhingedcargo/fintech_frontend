@@ -19,8 +19,8 @@ export default function CustomerDetails(params) {
 	const {slug} = useParams();
 
 	useEffect(() => {
-		// const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
-		const URI = `http://localhost:8000/api/contact/${slug}`;
+		const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
+		// const URI = `http://localhost:8000/api/contact/${slug}`;
     setLoader(true);
 		const fetchContact = async () => {
 			try {
@@ -52,8 +52,8 @@ export default function CustomerDetails(params) {
     
   const updateData = async () => {
     setLoader(true);
-    // const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
-    const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${slug}`
+    const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
+    // const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${slug}`
     fetch(CREATE_CUSTOMER_URI, {
       method: 'PATCH',
       body: JSON.stringify(customer[0]),

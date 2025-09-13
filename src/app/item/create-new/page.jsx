@@ -55,8 +55,8 @@ export default function CreateItem() {
 
   const saveCustomer = () => {
     setLoader(true);
-    // const CREATE_ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/create"
-    const CREATE_ITEM_URI = "http://localhost:8000/api/item/create"
+    const CREATE_ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/create"
+    // const CREATE_ITEM_URI = "http://localhost:8000/api/item/create"
     fetch(CREATE_ITEM_URI, {
       method: 'POST',
       body: JSON.stringify(item),

@@ -13,8 +13,8 @@ export default function Items() {
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
 
-  // const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all"
-  const ITEM_URI = "http://localhost:8000/api/item/all";
+  const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all"
+  // const ITEM_URI = "http://localhost:8000/api/item/all";
 
   useEffect(() => {
     if(message) {
