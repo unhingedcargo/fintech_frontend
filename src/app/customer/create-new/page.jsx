@@ -31,14 +31,15 @@ export default function NewCustomer() {
   },[])
 
   const handleGSTStatus = (e) => {
-    let gstValue = document.getElementById("gstInput");
-    setGSTStatus(e.target.checked);
-    setCustomer((prev) => ({...prev, "taxable" : e.target.checked}))
-    e.target.checked?setCustomer((prev) => ({...prev, "gstin":gstValue.value})):setCustomer((prev) => ({...prev, "gstin":""}))
+    const newValue = e.target.checked;
+    setGSTStatus(newValue);
+    setCustomer((prev) => ({...prev, "taxable":newValue}));
+    !newValue ? setCustomer((prev) => ({...prev, "gstin":""})) : null
   }
 
-  const handleGSTInput = (e) => {
-    setCustomer((prev) => ({...prev, "gstin":e.target.value}))
+  const updateCustomer = (e) => {
+    // console.log(customer);
+    setCustomer((prev) => ({...prev, [e.target.name]:e.target.value}))
   }
 
   const saveCustomer = () => {
@@ -100,105 +101,126 @@ export default function NewCustomer() {
               <span>Contact Created Successfully!</span>
             </div>
           } 
-            <div className="grid grid-cols-2 gap-8 mt-5 items-center p-5">
+
+
+            <div className="grid grid-cols-12 gap-8 mt-5 items-center p-5">
+
+              <div className="col-span-2">
+                  Company Name
+                </div>  
+              <div className='col-span-6'>
+                <input type="text" placeholder="Company Name" ref={firstFocus}
+                className="input w-full rounded-full px-6" 
+                maxLength={100} name='company_name'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-2"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className="col-span-2">
+                  Contact Name
+                </div>  
+              <div className='col-span-6'>
+                <input type="text" placeholder="Name" className="input w-full rounded-full px-6"
+                maxLength={50} name='name'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-2"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className="col-span-2">
+                  Display Name
+                </div>  
+              <div className='col-span-6'>
+                <input type="text" placeholder="Display Name" className="input w-full rounded-full px-6"
+                maxLength={100} name='display_name'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-2"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className="col-span-2">
+                  Primary Contact
+                </div>  
+              <div className='col-span-2'>
+                <input type="text" placeholder="+91 XXXXX XXXXX" className="input w-full rounded-full px-6"
+                maxLength={15} name='contact'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-6"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className="col-span-2">
+                  Alternate Contact
+                </div>  
+              <div className='col-span-2'>
+                <input type="text" placeholder="+91 XXXXX XXXXX" className="input w-full rounded-full px-6"
+                maxLength={15} name='alt_contact'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-6"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className="col-span-2">
+                  Email Address
+                </div>  
+              <div className='col-span-6'>
+                <input type="email" placeholder="Email Address" className="input validator w-full rounded-full px-6"
+                maxLength={100} name='email'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-2"></div>
+              <div className="col-span-2">{}</div>
               
-
-                <div className='col-span-2'>
-                  <label className="input w-[50%]">
-                    <span className="label">Company Name</span>
-                    <input tabIndex={0} type="text" placeholder="Comapany Name" ref={firstFocus}
-                    onChange={(e) => setCustomer((prev) => ({...prev, "company_name":e.target.value}))}/>
+              <div className="col-span-2">
+                  <span>GST Registration</span>
+                </div>  
+              <div className='col-span-2 gap-4 items-center'>
+                <span className='label'>
+                  <label className="swap pe-2">
+                    <input type="checkbox" onChange={(handleGSTStatus)}/>
+                    <div className="swap-on bg-green-400 rounded-lg text-black font-bold py-2 px-4">GST Registered</div>
+                    <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
                   </label>
+                </span>
+              </div>
+              {gstStatus && 
+                <>
+                <div className="col-span-3">
+                  <input type="text" placeholder="Enter GST Number" className="input w-full rounded-full px-6"
+                  maxLength={15} name='gstin'
+                onChange={updateCustomer} />
                 </div>
+                <div className="col-span-5"></div>
+                </>  
+                }
+              {!gstStatus && 
+                <>
+                <div className="col-span-5">
+                  <span>Click if you have gst registered business</span>
+                </div>
+                <div className="col-span-3"></div>
+                </>  
+                }
+
+              <div className="col-span-2">
+                  Opening Balance
+                </div>  
+              <div className='col-span-2'>
+                <input type="text" className="input w-full rounded-full px-6" defaultValue={0}
+                maxLength={5} name='opening_balance'
+                onChange={updateCustomer} />
+              </div>
+              <div className="col-span-6"></div>
+              <div className="col-span-2">{}</div>
+
+              <div className='col-span-4 mt-8'>
+                <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
+                <button className='btn btn-ouline ms-8' onClick={()=>{window.location.reload()}}>Cancel</button>
+                {/* <button className='btn btn-ouline ms-4' onClick={()=>{console.log(customer)}}>Show</button> */}
+              </div>
                 
-                <div className='col-span-2'>
-                  <label className="input w-[50%]">
-                    <span className="label">Name</span>
-                    <input tabIndex={0} type="text" placeholder="Customer"
-                    onChange={(e) => setCustomer((prev) => ({...prev, "name":e.target.value}))}/>
-                  </label>
-                </div>
-                
-                <div className='col-span-2'>
-                  <label className="input w-[50%]">
-                    <span className="label">Display Name</span>
-                    <input type="text" placeholder="Display Name" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "display_name":e.target.value}))}/>
-                  </label>
-                </div>
-                
-                <div>
-                  <label className="input w-[50%]">
-                    <span className="label">Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "contact":e.target.value}))}/>
-                  </label>
-                </div>
-                <div>
-                  <label className="input w-[60%]">
-                    <span className="label">Alternate Contact No.</span>
-                    <input type="text" placeholder="XXXXX-XXXXX" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "alt_contact":e.target.value}))}/>
-                  </label>
-                </div>
-                
-                <div className='col-span-2'>
-                  <label className="input validator w-[50%]">
-                    <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <g
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        strokeWidth="2.5"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                      </g>
-                    </svg>
-                    <input type="email" placeholder="mail@email.com" 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "email":e.target.value}))}/>
-                  </label>
-                  <div className="validator-hint hidden">Enter valid email address</div>
-                </div>
-                
-                <div className='col-span-2 -mb-7'>
-                  <p className='text-sm'>*Check to enable GST Status (Registered or Not Registered)</p>
-                </div>
 
-                <div>
-                  <label className="input w-[60%]">
-                    {/* <span className="label">GSTIN</span> */}
-                    <span className='label'>
-                      <label className="swap pe-2">
-                        <input type="checkbox" checked={gstStatus} onChange={handleGSTStatus}/>
-                        <div className="swap-on bg-green-400 rounded-lg text-black font-bold py-2 px-4">GST Registered</div>
-                        <div className="swap-off bg-red-600 rounded-lg text-white font-medium py-2 px-4">Not Registered</div>
-                      </label>
-                    </span>
-                    <input type="text" placeholder="99ABCDE9999F1ZX" id='gstInput' disabled={!gstStatus} onChange={handleGSTInput} onFocus={handleGSTInput} onBlur={handleGSTInput}/>
-                  </label>
-                </div>
-
-                <div></div>
-                {/* <div></div> */}
-
-                <div className='col-span-2'>
-                  <label className="input w-[30%]">
-                    <span className="label">Opening Balance</span>
-                    <input type="text" defaultValue={0.00} 
-                    onChange={(e) => setCustomer((prev) => ({...prev, "opening_balance":e.target.value}))}/>
-                  </label>
-                </div>
-
-                <div>
-                  <button className='btn btn-wide btn-outline btn-success' onClick={saveCustomer}>Create</button>
-                  <button className='btn btn-ouline ms-4' onClick={()=>{window.location.reload()}}>Cancel</button>
-                </div>
-
-
-
-                {/* This is main body of the input form */}
             </div>
             
         </div>
