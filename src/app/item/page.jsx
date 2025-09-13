@@ -1,14 +1,12 @@
 "use client"
 
-export const dynamic = "force-dynamic";
-
 import Sidebar from '@/components/Sidebar';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 
-export default function Items() {
+function ItemContent() {
   const [items, setItems] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -103,3 +101,12 @@ export default function Items() {
     </>
   )
 }
+
+export default function Items() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ItemContent />
+    </Suspense>
+  )
+}
+

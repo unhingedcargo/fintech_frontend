@@ -5,10 +5,10 @@ export const dynamic = "force-dynamic";
 import Sidebar from '@/components/Sidebar'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 
-export default function Vendor() {
+function VendorComponent() {
   const [vendors, setVendors] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -110,4 +110,10 @@ export default function Vendor() {
     </div>
     </>
   )
+}
+
+export default function Vendor() {
+  <Suspense fallback={<div>Loading...</div>}>
+    <VendorComponent />
+  </Suspense>
 }

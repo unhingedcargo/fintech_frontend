@@ -1,14 +1,12 @@
 "use client"
 
-export const dynamic = "force-dynamic";
-
 import Sidebar from '@/components/Sidebar'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 
-export default function Customer() {
+function CustomerComponent() {
   const [customers, setCustomers] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -111,4 +109,10 @@ export default function Customer() {
     </div>
     </>
   )
+}
+
+export default function Customers() {
+  <Suspense fallback={<div>Loading...</div>}>
+    <CustomerComponent />
+  </Suspense>
 }
