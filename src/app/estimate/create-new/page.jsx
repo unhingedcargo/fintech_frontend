@@ -313,11 +313,11 @@ const handleOrderChange = (id, field, value) => {
                       <tr className='text-base'>
                         {/* <th className='border-2 border-blue-400 px-4 py-3 font-normal w-[02%]'>#</th> */}
                         <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-start w-[35%]'>Particulars & Details</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>HSN Code</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>Qty</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[10%]'>Rate</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-center w-[15%]'>Tax</th>
-                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[15%]'>Amount</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal w-[10%]'>HSN Code</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal w-[10%]'>Qty</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal w-[10%]'>Rate</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal w-[15%]'>Tax</th>
+                        <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal w-[15%]'>Amount</th>
                         <th className='border-2 border-blue-400 px-4 py-3 font-semibold dark:font-normal text-end w-[5%]'>Action</th>
                       </tr>
                     </thead>
