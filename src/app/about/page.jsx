@@ -4,7 +4,6 @@ import jsPDF from 'jspdf';
 import React, { useState } from 'react';
 
 export default function AboutPage() {
-  const [fileName, setFileName] = useState('test.pdf');
   const [companyData, setCompanyData] = useState({
       "name": "PRINT PLUS",
       "address" : "#37, Sri Shakthi, 2nd Main Road, Sri Rama Layout, JP Nagar 7th Phase, Bengaluru - 560078",
@@ -26,31 +25,53 @@ export default function AboutPage() {
   
   const createPDF = () => {
     // const img = "/PrintPlus LOGO PNG.png";
-    const data = new jsPDF();
-    data.addFont("/fonts/Poppins-Regular.ttf", "regular", 'normal');
-    data.addFont("/fonts/Poppins-Bold.ttf", "bold", 'normal');
-    data.addFont("/fonts/Poppins-Medium.ttf", "medium", 'normal');
-    data.rect(10, 10, 190, 277);
-    data.line(10, 40, 200, 40);
-
-    // HEADER
-    data.addImage(`${companyData.logo}`, "PNG", 13,13,24,24,"Company LOGO");
-    data.setFont("medium", "normal");
-    data.setFontSize(12);
-    data.text(`${companyData.name}`, 45, 16);
+    const doc = new jsPDF("portrait", "mm");
+    doc.addFont("/fonts/Poppins-Regular.ttf", "regular", 'normal');
+    doc.addFont("/fonts/Poppins-Bold.ttf", "bold", 'normal');
+    doc.addFont("/fonts/Poppins-Medium.ttf", "medium", 'normal');
+    doc.setLineWidth(0.5);
+    doc.rect(10, 10, 190, 277);
+    doc.line(10, 40, 200, 40);
     
-    data.setFont("regular", "normal");
-    data.setFontSize(10);
-    data.text(
+    // HEADER
+    doc.addImage(`${companyData.logo}`, "PNG", 13,13,24,24,"Company LOGO");
+    doc.setFont("medium", "normal");
+    doc.setFontSize(12);
+    doc.text(`${companyData.name}`, 45, 16);
+    
+    doc.setFont("regular", "normal");
+    doc.setFontSize(10);
+    doc.text(
       `${companyData.address}\nContact : ${companyData.contact}\nGSTIN : ${companyData.gstin}`, 
-      45, 21, {maxWidth: 70}
+      45, 21, {maxWidth: 70, align:"left"}
     );
-
-    data.setFontSize(22);
-    data.setTextColor(15,98,172);
-    data.text("ESTIMATE", 198, 38, {align:'right'});
-
+    
+    doc.setFontSize(22);
+    doc.setTextColor(15,98,172);
+    doc.text("ESTIMATE", 198, 38, {align:'right'});
+    
     // Customer Details
+    doc.setFontSize(11);
+    doc.setTextColor("black");
+    // doc.line(10, 60, 200, 60);
+    // doc.line(10, 50, 200, 50);
+    // doc.text(`Bill To : ${jobData.customer}`, 12, 47, {align:"left", maxWidth:90});
+    
+    const cust_text = `Bill To : Majestic Infomatrix \nContact No. : ${jobData.contact}`;
+    const cust_text_h = doc.getTextDimensions(cust_text,{maxWidth:90}).h + 2;
+    console.log(cust_text_h, typeof(parseInt(cust_text_h)));
+    
+    doc.setLineHeightFactor(2);
+    doc.text(`Bill To : Majestic Infomatrix\nContact No. : ${jobData.contact}`, 13, 47, {align:"left", maxWidth:90});
+    doc.text(`Bill No. : ${jobData.jobno}\nDate : ${jobData.jobDate}`, 107, 47, {align:"left", maxWidth:90});
+    doc.line(10, 48+cust_text_h, 200, 48+cust_text_h);
+    doc.line(105, 40, 105, 48+cust_text_h);
+    // doc.text(`Bill No. : `, 107, 47, {align:"left", maxWidth:80});
+    // doc.text(`Contact No. : ${jobData.contact}`, 12, 56, {align:"left", maxWidth:90});
+    // doc.text(`Date : ${jobData.jobDate}`, 107, 56, {align:"left", maxWidth:80});
+
+    
+
 
 
 
@@ -63,8 +84,9 @@ export default function AboutPage() {
     // Footer
 
 
-    data.text("this is a new pdf", 50, 50);
-    data.save(`${jobData.jobno}.pdf`);
+    doc.text("this is a new pdf", 105, 148, {align:"center"});
+    // doc.save(`${jobData.jobno}.pdf`);
+    doc.output("pdfobjectnewwindow");
     
   }
 
