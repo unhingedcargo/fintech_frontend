@@ -1,7 +1,7 @@
 "use client";
 import Sidebar from '@/components/Sidebar';
-import jsPDF from 'jspdf';
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
 
 export default function AboutPage() {
   const [companyData, setCompanyData] = useState({
@@ -26,6 +26,7 @@ export default function AboutPage() {
   const createPDF = () => {
     // const img = "/PrintPlus LOGO PNG.png";
     const doc = new jsPDF("portrait", "mm");
+    console.log(doc.getPageInfo);
     doc.addFont("/fonts/Poppins-Regular.ttf", "regular", 'normal');
     doc.addFont("/fonts/Poppins-Bold.ttf", "bold", 'normal');
     doc.addFont("/fonts/Poppins-Medium.ttf", "medium", 'normal');
@@ -57,14 +58,14 @@ export default function AboutPage() {
     // doc.line(10, 50, 200, 50);
     // doc.text(`Bill To : ${jobData.customer}`, 12, 47, {align:"left", maxWidth:90});
     
-    const cust_text = `Bill To : Majestic Infomatrix \nContact No. : ${jobData.contact}`;
-    const cust_text_h = doc.getTextDimensions(cust_text,{maxWidth:90}).h + 2;
+    const cust_text = `Bill To : Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix Majestic Infomatrix \nContact No. : ${jobData.contact}`;
+    const cust_text_h = doc.getTextDimensions(cust_text,{maxWidth:80}).h + 2;
     console.log(cust_text_h, typeof(parseInt(cust_text_h)));
     
-    doc.setLineHeightFactor(2);
-    doc.text(`Bill To : Majestic Infomatrix\nContact No. : ${jobData.contact}`, 13, 47, {align:"left", maxWidth:90});
+    // doc.setLineHeightFactor(1.5);
+    doc.text(cust_text, 13, 47, {align:"left", maxWidth:90});
     doc.text(`Bill No. : ${jobData.jobno}\nDate : ${jobData.jobDate}`, 107, 47, {align:"left", maxWidth:90});
-    doc.line(10, 48+cust_text_h, 200, 48+cust_text_h);
+    doc.line(10, 49+cust_text_h, 200, 49+cust_text_h);
     doc.line(105, 40, 105, 48+cust_text_h);
     // doc.text(`Bill No. : `, 107, 47, {align:"left", maxWidth:80});
     // doc.text(`Contact No. : ${jobData.contact}`, 12, 56, {align:"left", maxWidth:90});
@@ -97,9 +98,60 @@ export default function AboutPage() {
         <Sidebar />
       </div>
       <div className='flex-1 mx-8 my-5 pt-20'>
-        this is about page
 
-        <button className="btn btn-primary" onClick={createPDF}>create pdf</button>
+      <div className="flex flex-col justify-center items-center">
+        
+        {/* top bar for the buttons */}
+        <div className="bg-white shadow-blue-950 shadow-2xl w-[210mm] h-25 rounded-2xl"> 
+
+        </div>
+
+        <div className='bg-white shadow-2xl p-10 mt-10 w-[210mm] min-h-[297mm]'>  {/* This can be our id for the pdf */}
+
+
+          <div className="grid grid-cols-2 border-4 border-blue-900">
+            {/* Header */}
+            <div className="col-span-2 w-full h-40 mb-2">
+              <div className="grid grid-cols-20 border-b-4 border-black">
+
+                <div className='col-span-4 p-4 items-center align-middle text-center'>
+                  <img src="/PrintPlus LOGO PNG.png" alt="Company LOGO" />
+                </div>
+                
+                <div className='col-span-9 px-3 py-1'>
+                  <h1 className='text-2xl font-bold text-blue-500'>{companyData.name}</h1>
+                  <p className='text-md font-normal text-gray-600'>{companyData.address}</p>
+                  <p className='text-md font-normal text-gray-600'>Contact: {companyData.contact}</p>
+                  <p className='text-md font-normal text-gray-600'>GSTIN: {companyData.gstin}</p>
+                </div>
+                
+                <div className='col-span-7 p-4 flex items-end justify-end'>
+                  <h1 className='text-3xl font-normal text-blue-500'>ESTIMATE</h1>
+
+                </div>
+              </div>
+
+            </div>
+
+
+            <div className=''>
+              <div className="w-full h-26 bg-fuchsia-400">
+
+              </div>
+
+              <div className="w-full h-26 bg-indigo-400">
+
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+        {/* this is about page
+
+        <button className="btn btn-primary" onClick={createPDF}>create pdf</button> */}
 
       </div>
 
