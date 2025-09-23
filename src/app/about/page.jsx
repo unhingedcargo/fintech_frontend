@@ -14,7 +14,8 @@ export default function AboutPage() {
   const [jobData, setJobData] = useState({
     "customer": "customer",
     "contact" : "contact",
-    "gstin" : "gsting",
+    "gstin" : "",
+    "isIGST" : false,
     "jobno" : "jobno",
     "jobDate" : "jobDate",
     "paymentMode" : "paymentMode",
@@ -106,13 +107,13 @@ export default function AboutPage() {
 
         </div>
 
-        <div className='bg-white shadow-2xl p-10 mt-10 w-[210mm] min-h-[297mm]'>  {/* This can be our id for the pdf */}
+        <div className='bg-white shadow-2xl p-10 mt-10 w-[210mm] rounded-2xl'>  {/* This can be our id for the pdf */}
 
 
-          <div className="grid grid-cols-2 border-4 border-blue-900">
+          <div className="grid grid-cols-2 border-2 border-blue-900">
             {/* Header */}
-            <div className="col-span-2 w-full h-40 mb-2">
-              <div className="grid grid-cols-20 border-b-4 border-black">
+            <div className="col-span-2 w-full h-40">
+              <div className="grid grid-cols-20 border-b-2 border-black">
 
                 <div className='col-span-4 p-4 items-center align-middle text-center'>
                   <img src="/PrintPlus LOGO PNG.png" alt="Company LOGO" />
@@ -134,19 +135,94 @@ export default function AboutPage() {
             </div>
 
 
-            <div className=''>
-              <div className="w-full h-26 bg-fuchsia-400">
 
+            <div className="col-span-2 border-b-2 border-black">
+              <div className="flex divide-x-2 divide-black">
+                <div className='w-full my-1'>
+                  <h1 className="text-lg ms-2 text-blue-950">
+                    Bill To : {jobData.customer}
+                  </h1>
+                  <h1 className="text-lg ms-2 text-blue-950">
+                    {jobData.gstin || ""}
+                  </h1>
+                </div>
+                <div className='w-full my-1'>
+                  <h1 className="text-lg ms-2 text-blue-950">
+                    No. : {jobData.jobno}
+                  </h1>
+                  <h1 className="text-lg ms-2 text-blue-950">
+                    Date : {jobData.jobDate}
+                  </h1>
+                </div>              
               </div>
 
-              <div className="w-full h-26 bg-indigo-400">
-
-              </div>
             </div>
+
+            <div className='col-span-2 bg-gray-200 text-neutral-950 h-6 text-center font-semibold'>Item Details</div>
+
+            <div className='col-span-2 text-black'>
+              <table className='border border-collapse w-full'>
+                <thead>
+                  <tr>
+                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>#</th>
+                    <th className='border-2 border-black text-black text-sm font-medium align-bottom text-start ps-2' rowSpan={2}>Items & particulars</th>
+                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Qty</th>
+                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Rate</th>
+                    {
+                      !jobData.isIGST && (
+                        <>
+                          <th className='border-2 border-black text-black text-sm font-medium' colSpan={2}>CGST</th>
+                          <th className='border-2 border-black text-black text-sm font-medium' colSpan={2}>SGST</th>
+                        </>
+                      )
+                    }{
+                      jobData.isIGST &&
+                      (<th className='border-2 border-black text-black text-sm font-medium' colSpan={2}>IGST</th>)
+                    }
+                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Amount</th>
+                  </tr>
+                  
+                  <tr>
+                    { 
+                    !jobData.isIGST && (
+                      <>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">%</th>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">Amt</th>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">%</th>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">Amt</th>
+                      </>
+                    )}
+                    { jobData.isIGST && (
+                      <>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">%</th>
+                        <th className="border-2 border-black text-black font-normal text-sm px-2">Amt</th>
+                      </>
+                    )}
+
+                  </tr>
+
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+            </div>
+
+
+          
 
 
           </div>
         </div>
+
       </div>
 
         {/* this is about page

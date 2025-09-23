@@ -13,7 +13,7 @@ export default function CreateEstimate() {
   const [jobno, setJobno] = useState("");
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [newCustomer, setNewCustomer] = useState({"customer":"", "mobile":""});
+  const [newCustomer, setNewCustomer] = useState({"customer":null, "contact":null});
   const [items, setItems] = useState([]);
   const [custID, setCustID] = useState("");
   const [grandtotal, setgrandtotal] = useState();
@@ -54,9 +54,14 @@ export default function CreateEstimate() {
   
   useEffect(() => {
     setLoader(true);
-    const NEXT_JOBNO_URI = "http://localhost:8000/api/nextjobno";
-    const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
-    const ITEM_URI = "http://localhost:8000/api/item/all";
+    // const NEXT_JOBNO_URI = "http://localhost:8000/api/nextjobno";
+    // const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
+    // const ITEM_URI = "http://localhost:8000/api/item/all";
+    const NEXT_JOBNO_URI = process.env.NEXT_PUBLIC_JOBNO_URI;
+    console.log("NEXT_JOB_URI", NEXT_JOBNO_URI);
+    // const NEXT_JOBNO_URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno";
+    const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all";
+    const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all";
     
     const fetchAllData = async () => {
     try {
@@ -105,8 +110,8 @@ const handleOrderChange = (id, field, value) => {
       const rate = Number(updated.rate) || 0;
       const taxRate = Number(updated.tax_rate) || 0;
 
-      const lineTotal = qty * rate; // subtotal before tax
-      const taxAmount = (lineTotal * taxRate) / 100;
+      const lineTotal = (qty * rate).toFixed(2); // subtotal before tax
+      const taxAmount = ((lineTotal * taxRate) / 100).toFixed(2);
       const amount = lineTotal + taxAmount;
 
       updated.total = lineTotal;
@@ -146,20 +151,22 @@ const handleOrderChange = (id, field, value) => {
   };
 
   const findCustomer = (e) => {
-    const name = e.target.value;
-    const selectCustomer = customers.find((c) => c.display_name === name);
+    const field = e.target.name;
+    const value = e.target.value;
+    const selectCustomer = customers.find((c) => c.display_name === value);
     if (selectCustomer) {
       setSelectedCustomer(selectCustomer);
-      setNewCustomer({"customer":"", "mobile":""});
+      setNewCustomer({"customer":null, "contact":null});
     } else {
       setSelectedCustomer(null);
-      setNewCustomer(prev => ({...prev, name}))
+      setNewCustomer(prev => ({...prev, [field] : value }));
     }
   }
 
   const saveEstimate = async () => {
     setLoader(true);
-    const SAVE_ESTIMATE_URI = `http://localhost:8000/api/estimate/create`
+    // const SAVE_ESTIMATE_URI = `http://localhost:8000/api/estimate/create`
+    const SAVE_ESTIMATE_URI = `https://fintech-backend-08wx.onrender.com/api/estimate/create`
     const slug = Date.now().toString() + jobno;
     const payLoad = {
       "orders" : orders.map((o, index) => ({
@@ -167,23 +174,24 @@ const handleOrderChange = (id, field, value) => {
         "item_id" : o.item_id,
         "item" : o.item,
         "desc" : o.desc,
-        "qty" : Number(o.qty),
-        "rate" : Number(o.rate),
-        "total" : Number(o.total),
-        "tax_rate" : Number(o.tax_rate),
-        "tax_amount" : Number(o.tax_amount),
-        "amount" : Number(o.amount),
-
+        "qty" : Number((Number(o.qty)).toFixed(2)),
+        "rate" : Number((Number(o.rate)).toFixed(2)),
+        "total" : Number((Number(o.total)).toFixed(2)),
+        "tax_rate" : Number((Number(o.tax_rate)).toFixed(2)),
+        "tax_amount" : Number((Number(o.tax_amount)).toFixed(2)),
+        "amount" : Number((Number(o.amount)).toFixed(2)),
       })),
       "jobslug": slug,
       "jobno" : jobno,
       "job_date" : selectDate.toISOString().split("T")[0],
-      "cust_id" : selectedCustomer?selectedCustomer.cust_id:0,
-      "taxable_amount" : orderTotals.subTotal,
-      "tax_amount" : orderTotals.totalTax,
-      "discount" : Number(discount) || 0,
-      "grandtotal" : Number(orderTotals.grandTotal),
-      "advance" : Number(advance) || 0
+      "cust_id" : selectedCustomer?selectedCustomer.cust_id:null,
+      "taxable_amount" : Number((orderTotals.subTotal).toFixed(2)),
+      "tax_amount" : Number((orderTotals.totalTax).toFixed(2)),
+      "discount" : Number((Number(discount)).toFixed(2)) || 0,
+      "grandtotal" : Number((Number(orderTotals.grandTotal)).toFixed(2)),
+      "advance" : Number((Number(advance)).toFixed(2)) || 0,
+      "unreg_customer": newCustomer.customer,
+      "unreg_contact" : newCustomer.contact
     }
     console.log(payLoad);
     try{
@@ -210,6 +218,7 @@ const handleOrderChange = (id, field, value) => {
     }finally {
       setLoader(false);
     }
+
   }
 
   return (
@@ -238,7 +247,7 @@ const handleOrderChange = (id, field, value) => {
                 <div className='col-span-12'>
                   <label className="input w-[50%]">
                     <span className="label">Customer Name</span>
-                    <input type="text" placeholder="Cash Sale" list="customerList" onChange={findCustomer} onBlur={findCustomer}/>
+                    <input type="text" placeholder="Cash Sale" list="customerList" name='customer' onChange={findCustomer} onBlur={findCustomer}/>
                     <datalist id='customerList'>
                       {customers.map((customer) => 
                         <option value={customer.display_name} key={customer.display_name}></option>
@@ -271,11 +280,11 @@ const handleOrderChange = (id, field, value) => {
                   </div>
                 }
 
-                {!selectedCustomer && newCustomer.name &&
+                {!selectedCustomer && newCustomer.customer &&
                   <div className='col-span-12'>
                   <label className="input w-[50%]">
                     <span className="label">Contact Number</span>
-                    <input type="text" onChange={findCustomer} maxLength={15} onBlur={findCustomer}/>
+                    <input type="text" name='contact' onChange={findCustomer} maxLength={15} onBlur={findCustomer}/>
                   </label>
                 </div>
                 }
@@ -379,7 +388,16 @@ const handleOrderChange = (id, field, value) => {
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
                           <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' 
                           value={order.qty}
-                          onChange={(e) => handleOrderChange(order.id, "qty", Number(e.target.value))}
+                          onChange={(e) => {
+                            const qtyTemp = e.target.value;
+                            // ❌ block if more than one dot
+                            if (qtyTemp.split(".").length - 1 > 1) return;
+
+                            // ❌ block if contains anything other than digits or "."
+                            if (!/^[0-9]*\.?[0-9]*$/.test(qtyTemp)) return;
+
+                            handleOrderChange(order.id, "qty", (qtyTemp))}}
+                          onBlur={(e) => handleOrderChange(order.id, "qty", parseFloat(e.target.value)||0)}
                           />
                           <p className='text-right'>{order.unit}</p>
                         </td>
@@ -387,7 +405,8 @@ const handleOrderChange = (id, field, value) => {
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
                           <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' 
                           value={order.rate}
-                          onChange={(e) => handleOrderChange(order.id, "rate", Number(e.target.value))}                          
+                          onChange={(e) => handleOrderChange(order.id, "rate", (e.target.value))}                          
+                          onBlur={(e) => handleOrderChange(order.id, "rate", parseFloat(e.target.value)||0)}
                           />
                         </td>
 
@@ -443,11 +462,11 @@ const handleOrderChange = (id, field, value) => {
                 <div className="grid grid-cols-2 items-center">
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Sub Total</div>
-                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.subTotal}</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.subTotal).toFixed(2)}</div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Discount</div>
                   <div className='text-right text-lg pe-4 py-2'>
-                    <input type="text" className='input h-8 w-25 text-right' maxLength={(orderTotals.subTotal.toString().length)}
+                    <input type="text" className='input h-8 w-25 text-right' maxLength={(orderTotals.subTotal.toString().length+2)}
                     onChange={(e) => {
                       setDiscount(Number(e.target.value));
                     }}
@@ -457,10 +476,10 @@ const handleOrderChange = (id, field, value) => {
                   <div className='text-right text-lg pe-4 py-2'>TAXABLE</div>
                   {/* TAX DETAILS if APPLICABLE */}
                   <div className='text-start text-md font-medium ps-4 py-2'>SGST</div>
-                  <div className='text-right text-lg pe-4 py-2'>{orderTotals.totalTax}</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.totalTax).toFixed(2)}</div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Grand Total</div>
-                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-discount)>0 ? (orderTotals.grandTotal-discount) : 0}</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-discount)>0 ? (orderTotals.grandTotal-discount).toFixed(2) : 0}</div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Advance</div>
                   <div className='text-right text-lg pe-4 py-2'>
@@ -473,7 +492,7 @@ const handleOrderChange = (id, field, value) => {
                   </div>
 
                   <div className='text-start text-md font-medium ps-4 py-2'>Balance</div>
-                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-advance-discount)>0 ? (orderTotals.grandTotal-advance-discount) : 0}</div>
+                  <div className='text-right text-lg pe-4 py-2'>{(orderTotals.grandTotal-advance-discount)>0 ? (orderTotals.grandTotal-advance-discount).toFixed(2) : 0}</div>
 
                 </div>
               </div>
