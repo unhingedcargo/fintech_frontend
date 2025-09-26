@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react'
 
 
 export default function EstimatePage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const[estimates, setEstimates] = useState([]);
   const router = useRouter();
   const [alert, setAlert] = useState(false);
@@ -23,7 +25,7 @@ export default function EstimatePage() {
     // fetch data inside async function
     // const JOBCARD_URI = "https://fintech-backend-08wx.onrender.com/api/jobcard";
     const fetchEstimates = async () => {
-      const JOBCARD_URI = "http://localhost:8000/api/jobcard";
+      const JOBCARD_URI = `${BASE_URL}/jobcard`;
       setLoader(true);
       try {
         const res = await fetch(JOBCARD_URI);

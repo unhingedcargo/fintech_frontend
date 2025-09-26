@@ -6,9 +6,11 @@ import { MdOutlineCreate, MdCheck } from "react-icons/md";
 
 
 export default function ItemDetails() {
+	const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
 	const router = useRouter();
-  const [showAlert, setAlert] = useState({show:false, type:"success", message:""});
-  const [loader, setLoader] = useState(false);
+	const [showAlert, setAlert] = useState({show:false, type:"success", message:""});
+	const [loader, setLoader] = useState(false);
 	const [item, setItem] = useState([]);
 	const{slug} = useParams();
 	const [isItem, setIsItem] = useState(true);
@@ -18,7 +20,7 @@ export default function ItemDetails() {
 	const [isSales, setIsSales] = useState(true);
 
 	useEffect(() => {
-		const ITEM_URI = `https://fintech-backend-08wx/api/item/${slug}`;
+		const ITEM_URI = `${BASE_URL}/item/${slug}`;
 		// if (!slug) return;
 
 		// const ITEM_URI = `http://localhost:8000/api/item/${slug}`;
@@ -59,7 +61,7 @@ export default function ItemDetails() {
 
 
 	const updateData = async () => {
-		const ITEM_UPDATE_URI = `https://fintech-backend-08wx.onrender.com/api/item/update/${slug}`;
+		const ITEM_UPDATE_URI = `${BASE_URL}/item/update/${slug}`;
 		// const ITEM_UPDATE_URI = `http://localhost:8000/api/item/update/${slug}`;
 		setLoader(true)
 		try {
@@ -90,7 +92,7 @@ export default function ItemDetails() {
 	const deleteData = async () => {
 		setLoader(true);
 		// const ITEM_DELETE_URI = `https://fintech-backend-08wx.onrender.com/api/item/delete/${slug}`
-		const ITEM_DELETE_URI = `http://localhost:8000/api/item/delete/${slug}`
+		const ITEM_DELETE_URI = `${BASE_URL}/item/delete/${slug}`
 		const deleteName = item[0].item;
 		try {
 			const res = await fetch(ITEM_DELETE_URI, {

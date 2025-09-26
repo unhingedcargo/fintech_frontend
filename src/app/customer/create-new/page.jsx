@@ -44,7 +44,8 @@ export default function NewCustomer() {
 
   const saveCustomer = () => {
     setLoader(true);
-    const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+    const CREATE_CUSTOMER_URI = `${BASE_URL}/contact/create`;
     // const CREATE_CUSTOMER_URI = "http://localhost:8000/api/contact/create"
     fetch(CREATE_CUSTOMER_URI, {
       method: 'POST',

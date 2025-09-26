@@ -9,6 +9,8 @@ import React, { Suspense, useEffect, useState } from 'react'
 
 
 function VendorComponent() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const [vendors, setVendors] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -19,7 +21,7 @@ function VendorComponent() {
 
   // const message = searchParams.get('message');
 
-  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/vendor/all"
+  const CUSTOMER_URI = `${BASE_URL}/vendor/all`;
   // const CUSTOMER_URI = "http://localhost:8000/api/vendor/all"
 
   useEffect(() => {

@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import jsPDF from 'jspdf';
 
 export default function AboutPage() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const [companyData, setCompanyData] = useState({
       "name": "PRINT PLUS",
       "address" : "#37, Sri Shakthi, 2nd Main Road, Sri Rama Layout, JP Nagar 7th Phase, Bengaluru - 560078",

@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 
 
 export default function CreateEstimate() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const [selectDate, setDate] = useState(new Date());
   const [jobno, setJobno] = useState("");
   const [customers, setCustomers] = useState([]);
@@ -54,14 +56,9 @@ export default function CreateEstimate() {
   
   useEffect(() => {
     setLoader(true);
-    // const NEXT_JOBNO_URI = "http://localhost:8000/api/nextjobno";
-    // const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
-    // const ITEM_URI = "http://localhost:8000/api/item/all";
-    const NEXT_JOBNO_URI = process.env.NEXT_PUBLIC_JOBNO_URI;
-    console.log("NEXT_JOB_URI", NEXT_JOBNO_URI);
-    // const NEXT_JOBNO_URI = "https://fintech-backend-08wx.onrender.com/api/nextjobno";
-    const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all";
-    const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all";
+    const NEXT_JOBNO_URI = `${BASE_URL}/nextjobno`;
+    const CUSTOMER_URI = `${BASE_URL}/customer/all`;
+    const ITEM_URI = `${BASE_URL}/item/all`;
     
     const fetchAllData = async () => {
     try {
@@ -165,8 +162,7 @@ const handleOrderChange = (id, field, value) => {
 
   const saveEstimate = async () => {
     setLoader(true);
-    // const SAVE_ESTIMATE_URI = `http://localhost:8000/api/estimate/create`
-    const SAVE_ESTIMATE_URI = `https://fintech-backend-08wx.onrender.com/api/estimate/create`
+    const SAVE_ESTIMATE_URI = `${BASE_URL}/estimate/create`
     const slug = Date.now().toString() + jobno;
     const payLoad = {
       "orders" : orders.map((o, index) => ({

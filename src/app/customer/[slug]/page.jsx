@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { MdOutlineCreate, MdCheck } from "react-icons/md";
 
 export default function CustomerDetails(params) {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const router = useRouter();
 	const [customer, setCustomer] = useState([]);
   const [showAlert, setAlert] = useState({show:false, type:"success", message:""});
@@ -19,8 +21,7 @@ export default function CustomerDetails(params) {
 	const {slug} = useParams();
 
 	useEffect(() => {
-		const URI = `https://fintech-backend-08wx.onrender.com/api/contact/${slug}`;
-		// const URI = `http://localhost:8000/api/contact/${slug}`;
+		const URI = `${BASE_URL}/contact/${slug}`;
     setLoader(true);
 		const fetchContact = async () => {
 			try {
@@ -52,8 +53,7 @@ export default function CustomerDetails(params) {
     
   const updateData = async () => {
     setLoader(true);
-    const CREATE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/update/${slug}`
-    // const CREATE_CUSTOMER_URI = `http://localhost:8000/api/contact/update/${slug}`
+    const CREATE_CUSTOMER_URI = `${BASE_URL}/contact/update/${slug}`
     fetch(CREATE_CUSTOMER_URI, {
       method: 'PATCH',
       body: JSON.stringify(customer[0]),
@@ -87,8 +87,7 @@ export default function CustomerDetails(params) {
 
   const deleteData = async () => {
     setLoader(true);
-    // const DELETE_CUSTOMER_URI = `https://fintech-backend-08wx.onrender.com/api/contact/delete/${slug}`
-    const DELETE_CUSTOMER_URI = `http://localhost:8000/api/contact/delete/${slug}`
+    const DELETE_CUSTOMER_URI = `${BASE_URL}/contact/delete/${slug}`
     const deleteName = customer[0].display_name;
     try{
       const res = await fetch(DELETE_CUSTOMER_URI, {

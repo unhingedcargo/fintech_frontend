@@ -5,6 +5,8 @@ import Sidebar from '@/components/Sidebar';
 import { useRouter } from 'next/navigation';
 
 export default function CreateItem() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const firstFocus = useRef(null);
   const router = useRouter();
   const [gstStatus, setGSTStatus] = useState(false);
@@ -55,8 +57,8 @@ export default function CreateItem() {
 
   const saveCustomer = () => {
     setLoader(true);
-    const CREATE_ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/create"
-    // const CREATE_ITEM_URI = "http://localhost:8000/api/item/create"
+    const CREATE_ITEM_URI = `${BASE_URL}/item/create`;
+
     fetch(CREATE_ITEM_URI, {
       method: 'POST',
       body: JSON.stringify(item),

@@ -14,11 +14,8 @@ function CustomerComponent() {
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
 
-
-  // const message = searchParams.get('message');
-
-  // const CUSTOMER_URI = "http://localhost:8000/api/customer/all";
-  const CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/customer/all"
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const CUSTOMER_URI = `${BASE_URL}/customer/all`;
 
   useEffect(() => {
     if(message) {

@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react';
 
 function ItemContent() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const [items, setItems] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -14,7 +16,7 @@ function ItemContent() {
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
 
-  const ITEM_URI = "https://fintech-backend-08wx.onrender.com/api/item/all"
+  const ITEM_URI = `${BASE_URL}/item/all`;
   // const ITEM_URI = "http://localhost:8000/api/item/all";
 
   useEffect(() => {

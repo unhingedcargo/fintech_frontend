@@ -5,6 +5,8 @@ import Sidebar from '@/components/Sidebar';
 import { useRouter } from 'next/navigation';
 
 export default function NewCustomer() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const firstFocus = useRef(null);
   const router = useRouter();
   const [gstStatus, setGSTStatus] = useState(false);
@@ -44,7 +46,7 @@ export default function NewCustomer() {
 
   const saveCustomer = () => {
     setLoader(true);
-    const CREATE_CUSTOMER_URI = "https://fintech-backend-08wx.onrender.com/api/contact/create"
+    const CREATE_CUSTOMER_URI = `${BASE_URL}/contact/create`;
     // const CREATE_CUSTOMER_URI = "http://localhost:8000/api/contact/create"
     fetch(CREATE_CUSTOMER_URI, {
       method: 'POST',
