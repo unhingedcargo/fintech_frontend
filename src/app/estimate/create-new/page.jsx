@@ -23,6 +23,7 @@ export default function CreateEstimate() {
   const [discount, setDiscount] = useState(0);
   const [alert, setAlert] = useState(false);
   const [loader, setLoader] = useState(false);
+  
   const router = useRouter();
   
   const [orders, setOrders] = useState([
@@ -407,7 +408,10 @@ const handleOrderChange = (id, field, value) => {
                         </td>
 
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
-                          <select defaultValue="Select Tax" className="select h-10 mb-5"
+                          <select 
+                          // defaultValue="Select Tax" 
+                          value={order.tax_rate??""}
+                          className="select h-10 mb-5" 
                           onChange={(e) => {
                             handleOrderChange(order.id, "tax_rate", Number(e.target.value))
                             const newTaxAmount = Number(order.total) * Number(e.target.value) / 100;
@@ -493,7 +497,15 @@ const handleOrderChange = (id, field, value) => {
                 </div>
               </div>
               <div className="col-span-6">
-                <button className="btn btn-primary" onClick={saveEstimate}>Create</button>
+                <button 
+                className="btn btn-primary" 
+                onClick={saveEstimate}
+                disabled={!orderTotals.grandTotal || orderTotals.grandTotal<= 0}
+                >Create</button>
+                <button 
+                className="btn btn-success ms-4" 
+                onClick={() => window.location.reload()}
+                >Reset</button>
               </div>
               <div className="col-span-6"></div>
               <div className="col-span-6"></div>
