@@ -43,7 +43,7 @@ export default function Navbar() {
               className='absolute z-20 min-w-[100px] overflow-auto rounded-lg border border-slate-200 bg-white p-1.5 focus:outline-none'
               >
 
-                <Link role='menuitem' className='py-3 flex w-full text-black' href="">Clicko</Link>
+                <Link role='menuitem' className='py-3 flex w-full text-black' href="/preference">Preference</Link>
                 <Link role='menuitem' className='py-3 flex w-full text-black' href="">Clicko</Link>
                 <Link role='menuitem' className='py-3 flex w-full text-black' href="">Clicko</Link>
 

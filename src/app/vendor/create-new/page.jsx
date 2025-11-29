@@ -66,7 +66,7 @@ export default function NewCustomer() {
       setTimeout(() => {
         setAlert(false);
       }, 3000);
-      router.push(`/customer?message=${encodeURIComponent(customer.display_name)} Created Successfully!!`); 
+      router.push(`/vendor?message=${encodeURIComponent(customer.display_name)} Created Successfully!!`); 
     })
     .catch(error => {
       console.log(error);

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react'
 
 
+
 function CustomerComponent() {
   const [customers, setCustomers] = useState([]);
   const router = useRouter();
@@ -18,13 +19,14 @@ function CustomerComponent() {
   const CUSTOMER_URI = `${BASE_URL}/customer/all`;
 
   useEffect(() => {
-    if(message) {
-      setAlert(true);
-    }
-    setTimeout(() => {
-      router.replace("/customer")
-      setAlert(false);
-    }, 3000);
+    if(!message) return;
+
+    setAlert(true);
+
+    const timer = setTimeout(() => setAlert(false),3000);
+    
+    return () => clearTimeout(timer);
+
   },[message])
 
 
@@ -80,8 +82,8 @@ function CustomerComponent() {
             <thead className='dark:bg-blue-950'>
               <tr>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[5%]'>#</th>
-                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>Customer</th>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>Company Name</th>
+                <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[25%]'>Customer</th>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>Contact</th>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[10%]'>Alternate Contact</th>
                 <th className='border-2 border-blue-400 text-sm px-4 py-3 w-[15%]'>GSTIN</th>
@@ -93,7 +95,7 @@ function CustomerComponent() {
                 <tr key={index+1} className='cursor-pointer' onClick={() => (router.push(`customer/${row.cust_id}`))}>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[5%] text-center'>{index+1}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.display_name}</td>
-                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.company_name}</td>
+                <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[25%]'>{row.name}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.contact}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%] text-center'>{row.alt_contact}</td>
                 <td className='border-r-2 border-blue-400 font-normal text-sm px-4 py-3 w-[15%] text-center'>{row.gstin}</td>

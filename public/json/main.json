@@ -1,0 +1,19 @@
+{"company": 
+{"owner_name": "Mahesh Pathak", 
+"business_name": "Print Plus", 
+"contact": "9945071790", 
+"alt_contact": "8861534808", 
+"email": "printplus790@gmail.com", 
+"website": "www.printplusonline.com", 
+"address1": "#37, Sri Shakthi, 2nd Main Road", 
+"address2": "Sri Rama Layout", 
+"city": "Bengaluru", 
+"state": "Karnataka", 
+"pin":"560078" , 
+"business_type": "Manufacturer", "owner_type": "Sole Proprietorship", "gst_redg": true, "gstin": "29DIMPP3034G1Z0", "reg_date": "15-Jul-2024_10:46:39 AM"}, 
+
+"payment": 
+{"cash": {"clicked": true, "type": "CASH"}, "upi": {"clicked": true, "type": "UPI", "display": "PRINT PLUS", "id": "9945071790@axl"}, "bank": {"clicked": true, "type": "Bank Transfer", "acc_name": "PRINT PLUS", "acc_no": "50200057915071", "name": "HDFC Bank LTD", "ifsc": "HDFC0002394"}}, 
+
+"database": 
+{"provider": "MySQL", "host": "localhost", "port": "3306", "user": "root", "password": "whitesatin", "name": "printplus_db"}}

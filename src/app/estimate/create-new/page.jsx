@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
 import Sidebar from '@/components/Sidebar';
-import { MdKeyboardBackspace, MdOutlineCreate } from "react-icons/md";
+import { MdKeyboardBackspace, MdOutlineCreate, MdCalendarMonth } from "react-icons/md";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useRouter } from 'next/navigation';
@@ -17,8 +17,6 @@ export default function CreateEstimate() {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [newCustomer, setNewCustomer] = useState({"customer":null, "contact":null});
   const [items, setItems] = useState([]);
-  const [custID, setCustID] = useState("");
-  const [grandtotal, setgrandtotal] = useState();
   const [advance, setAdvance] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [alert, setAlert] = useState(false);
@@ -108,13 +106,13 @@ const handleOrderChange = (id, field, value) => {
       const rate = Number(updated.rate) || 0;
       const taxRate = Number(updated.tax_rate) || 0;
 
-      const lineTotal = (qty * rate).toFixed(2); // subtotal before tax
-      const taxAmount = ((lineTotal * taxRate) / 100).toFixed(2);
-      const amount = lineTotal + taxAmount;
+      const lineTotal = (qty * rate); // subtotal before tax
+      const taxAmount = ((lineTotal * taxRate) / 100);
+      const lineAmount = (lineTotal + taxAmount);
 
       updated.total = lineTotal;
       updated.tax_amount = taxAmount;
-      updated.amount = amount;
+      updated.amount =lineAmount;
 
       return updated;
 
@@ -162,6 +160,7 @@ const handleOrderChange = (id, field, value) => {
   }
 
   const saveEstimate = async () => {
+    console.log("ORDERS ", orders);
     setLoader(true);
     const SAVE_ESTIMATE_URI = `${BASE_URL}/estimate/create`
     const slug = Date.now().toString() + jobno;
@@ -188,9 +187,10 @@ const handleOrderChange = (id, field, value) => {
       "grandtotal" : Number((Number(orderTotals.grandTotal)).toFixed(2)),
       "advance" : Number((Number(advance)).toFixed(2)) || 0,
       "unreg_customer": newCustomer.customer,
-      "unreg_contact" : newCustomer.contact
+      "unreg_contact" : newCustomer.contact,
+      "job_status" : "CONFIRMED"
     }
-    console.log(payLoad);
+    // console.log("Sent Payload is: ", payLoad);
     try{
       const res = await fetch(SAVE_ESTIMATE_URI, {
         method:"POST",
@@ -202,9 +202,9 @@ const handleOrderChange = (id, field, value) => {
 
       const data = await res.json();
 
-      console.log("Estimate Saved",data);
+      // console.log("Estimate Saved", data);
 
-      router.push("/estimate");
+      // router.push("/estimate");
 
     }catch(err) {
       console.log("Fetching Error! ", err);
@@ -288,7 +288,7 @@ const handleOrderChange = (id, field, value) => {
 
                 <div className="col-span-4 mt-5">
                   <label className="input w-[90%]">
-                    <span className="label">Estimate Number</span>
+                    <span className="label">#</span>
                     <input type="text" maxLength={5} value={jobno} readOnly/>
                   </label>
                 </div>
@@ -297,7 +297,10 @@ const handleOrderChange = (id, field, value) => {
 
                 <div className="col-span-4 ">
                   <label className="input w-[90%]">
-                    <span className="label">Estimate Date</span>
+                    <span className="label"><MdCalendarMonth 
+                    fontSize={20}
+                    color='grey'
+                    /></span>
                     {/* <input type="date" maxLength={5}/> */}
                     <DatePicker 
                     dateFormat="dd-MMM-yyyy"
@@ -355,6 +358,7 @@ const handleOrderChange = (id, field, value) => {
                                   : o                                  
                               )
                             )
+                            document.getElementById('taxSelect').value = order.tax_rate;
                             } else {
                               setOrders((prevOrder) =>
                                 prevOrder.map((o) =>
@@ -373,6 +377,7 @@ const handleOrderChange = (id, field, value) => {
                           onChange={(e) => handleOrderChange(order.id, "desc", e.target.value)} />
 
                         </td>
+
                             {/* HSN INPUT */}
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
                           <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-center'
@@ -399,10 +404,17 @@ const handleOrderChange = (id, field, value) => {
                           <p className='text-right'>{order.unit}</p>
                         </td>
 
+                        {/* RATE INPUT */}
+
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
                           <input type="text" className='border-2 border-gray-600 h-10 pe-2 rounded-md w-full mb-5 text-right' 
                           value={order.rate}
-                          onChange={(e) => handleOrderChange(order.id, "rate", (e.target.value))}                          
+                          onChange={(e) => {
+                            const rateTemp = e.target.value;
+                            if (rateTemp.split(".").length - 1 > 1) return;
+                            if (!/^[0-9]*\.?[0-9]*$/.test(rateTemp)) return;
+
+                            handleOrderChange(order.id, "rate", (e.target.value))}}                          
                           onBlur={(e) => handleOrderChange(order.id, "rate", parseFloat(e.target.value)||0)}
                           />
                         </td>
@@ -410,6 +422,7 @@ const handleOrderChange = (id, field, value) => {
                         <td className='border-2 border-blue-400 px-4 py-4 align-top'>
                           <select 
                           // defaultValue="Select Tax" 
+                          id='taxSelect'
                           value={order.tax_rate??""}
                           className="select h-10 mb-5" 
                           onChange={(e) => {

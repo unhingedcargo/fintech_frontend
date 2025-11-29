@@ -1,30 +1,74 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import Sidebar from '@/components/Sidebar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
+import main from "../../../public/json/main.json";
 
 export default function AboutPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
-  const [companyData, setCompanyData] = useState({
-      "name": "PRINT PLUS",
-      "address" : "#37, Sri Shakthi, 2nd Main Road, Sri Rama Layout, JP Nagar 7th Phase, Bengaluru - 560078",
-      "contact" : "+91 99450 71790",
-      "gstin" : "29DIMPP3034G1Z0",
-      "logo" : "/PrintPlus LOGO PNG.png"
-    });
-  const [jobData, setJobData] = useState({
-    "customer": "customer",
-    "contact" : "contact",
-    "gstin" : "",
-    "isIGST" : false,
-    "jobno" : "jobno",
-    "jobDate" : "jobDate",
-    "paymentMode" : "paymentMode",
-    "orderValue" : "orderValue",
-    "advance" : "advance"
-  });
-  const [orderData, setOrderData] = useState([]);
+  const logo = "/PrintPlus LOGO PNG.png";
+
+  const searchParam = useSearchParams();
+  const slug = searchParam.get("slug");
+
+  const [jobData, setJobData] = useState([]);
+  const [customerData, setCustomerData] = useState();
+  const [isIGST, setIsIGST] = useState(false);
+
+  useEffect(() => {
+    if(!slug) return;
+
+    async function fetchData() {
+      try {
+        const res = await fetch(`${BASE_URL}/estimate/${slug}`);
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+        const json = await res.json();
+        setJobData(json);
+        // console.log(json);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        
+      }
+    }
+    // if (slug) 
+    fetchData();
+  },[]);
+
+ useEffect(()=>{
+  console.log("THIS IS JOB DATA", jobData);
+  if(!jobData.cust_id) return;
+  async function fetchData() {
+      try {
+        const res = await fetch(`${BASE_URL}/contact/${jobData.cust_id}`);
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+        const json = await res.json();
+        setCustomerData(json);
+        // console.log(json);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        
+      }
+    }
+    // if (slug) 
+    fetchData();
+ },[jobData]);
+
+ useEffect(()=>{
+  if(!customerData) return;
+  console.log("Customer Data", customerData);
+  (main.company.gstin.slice(0,2)!==customerData[0].gstin.slice(0,2))?setIsIGST(True):null;
+
+ },[customerData]);
+
+  const dateFormat = (date) => {
+    if (!date) return "";
+    const [year, month, day] = date.split("-");
+    return `${day}-${month}-${year}`;
+  }
   
   const createPDF = () => {
     // const img = "/PrintPlus LOGO PNG.png";
@@ -38,15 +82,16 @@ export default function AboutPage() {
     doc.line(10, 40, 200, 40);
     
     // HEADER
-    doc.addImage(`${companyData.logo}`, "PNG", 13,13,24,24,"Company LOGO");
+
+    doc.addImage(`${logo}`, "PNG", 13,13,24,24,"Company LOGO");
     doc.setFont("medium", "normal");
     doc.setFontSize(12);
-    doc.text(`${companyData.name}`, 45, 16);
+    doc.text(`${main.company.name}`, 45, 16);
     
     doc.setFont("regular", "normal");
     doc.setFontSize(10);
     doc.text(
-      `${companyData.address}\nContact : ${companyData.contact}\nGSTIN : ${companyData.gstin}`, 
+      `${main.company.address}\nContact : ${main.company.contact}\nGSTIN : ${main.company.gstin}`, 
       45, 21, {maxWidth: 70, align:"left"}
     );
     
@@ -94,6 +139,7 @@ export default function AboutPage() {
     
   }
 
+
   return (
     <>
     <div className='flex'>
@@ -114,21 +160,23 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-2 border-2 border-blue-900">
             {/* Header */}
-            <div className="col-span-2 w-full h-40">
-              <div className="grid grid-cols-20 border-b-2 border-black">
+            <div className="col-span-2 w-full">
+              <div className="grid grid-cols-20 border-b-1 border-gray-600">
 
                 <div className='col-span-4 p-4 items-center align-middle text-center'>
-                  <img src="/PrintPlus LOGO PNG.png" alt="Company LOGO" />
+                  <img src={logo} alt="Company LOGO" />
                 </div>
                 
                 <div className='col-span-9 px-3 py-1'>
-                  <h1 className='text-2xl font-bold text-blue-500'>{companyData.name}</h1>
-                  <p className='text-md font-normal text-gray-600'>{companyData.address}</p>
-                  <p className='text-md font-normal text-gray-600'>Contact: {companyData.contact}</p>
-                  <p className='text-md font-normal text-gray-600'>GSTIN: {companyData.gstin}</p>
+                  <h1 className='text-2xl font-bold text-blue-500'>{main.company.business_name.toUpperCase()}</h1>
+                  <p className='text-sm font-normal text-gray-600'>{main.company.address1}, {main.company.address2}, {main.company.city} - {main.company.pin}</p>
+                  <p className='text-sm font-normal text-gray-600'>Contact: {main.company.contact}, {main.company.alt_contact}</p>
+                  {main.company.gst_redg &&
+                  <p className='text-sm font-normal text-gray-600'>GSTIN: {main.company.gstin} {isIGST&&<p>STATE</p>}</p>
+                  }
                 </div>
                 
-                <div className='col-span-7 p-4 flex items-end justify-end'>
+                <div className='col-span-7 p-2 flex items-end justify-end'>
                   <h1 className='text-3xl font-normal text-blue-500'>ESTIMATE</h1>
 
                 </div>
@@ -138,38 +186,38 @@ export default function AboutPage() {
 
 
 
-            <div className="col-span-2 border-b-2 border-black">
-              <div className="flex divide-x-2 divide-black">
-                <div className='w-full my-1'>
-                  <h1 className="text-lg ms-2 text-blue-950">
+            <div className="col-span-2 border-b-2 border-gray-600">
+              <div className="grid grid-cols-2 divide-x-1 divide-black items-start">
+                <div className='p-2'>
+                  <p className="text-md ms-2 text-blue-950 m-0">
                     Bill To : {jobData.customer}
-                  </h1>
-                  <h1 className="text-lg ms-2 text-blue-950">
-                    {jobData.gstin || ""}
-                  </h1>
+                  </p>
+                  <p className="text-md ms-2 text-blue-950 m-0">
+                    {customerData ?  `GSTIN : ${customerData[0].gstin}` : `Contact : ${jobData.contact}`}
+                  </p>
                 </div>
-                <div className='w-full my-1'>
-                  <h1 className="text-lg ms-2 text-blue-950">
+                <div className='p-2'>
+                  <p className="text-md ms-2 text-blue-950 m-0">
                     No. : {jobData.jobno}
-                  </h1>
-                  <h1 className="text-lg ms-2 text-blue-950">
-                    Date : {jobData.jobDate}
-                  </h1>
+                  </p>
+                  <p className="text-md ms-2 text-blue-950 m-0">
+                    Date : {dateFormat(jobData.job_date)}
+                  </p>
                 </div>              
               </div>
 
             </div>
 
-            <div className='col-span-2 bg-gray-200 text-neutral-950 h-6 text-center font-semibold'>Item Details</div>
+            <div className='col-span-2 bg-gray-200 text-neutral-950 h-6 text-center '>Item Details</div>
 
             <div className='col-span-2 text-black'>
               <table className='border border-collapse w-full'>
                 <thead>
                   <tr>
-                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>#</th>
-                    <th className='border-2 border-black text-black text-sm font-medium align-bottom text-start ps-2' rowSpan={2}>Items & particulars</th>
-                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Qty</th>
-                    <th className='border-2 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Rate</th>
+                    <th className='border-1 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>#</th>
+                    <th className='border-1 border-black text-black text-sm font-medium align-bottom text-start ps-2' rowSpan={2}>Items & particulars</th>
+                    <th className='border-1 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Qty</th>
+                    <th className='border-1 border-black text-black text-sm font-medium align-bottom' rowSpan={2}>Rate</th>
                     {
                       !jobData.isIGST && (
                         <>
@@ -185,8 +233,7 @@ export default function AboutPage() {
                   </tr>
                   
                   <tr>
-                    { 
-                    !jobData.isIGST && (
+                    {!jobData.isIGST && (
                       <>
                         <th className="border-2 border-black text-black font-normal text-sm px-2">%</th>
                         <th className="border-2 border-black text-black font-normal text-sm px-2">Amt</th>

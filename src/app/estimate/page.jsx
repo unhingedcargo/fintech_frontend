@@ -58,46 +58,35 @@ export default function EstimatePage() {
           <table className='border border-collapse border-blue-400 text-base mt-8 w-full'>
             <thead className='bg-blue-950'>
               <tr>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[3%]'>#</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[13%]'>Estimate No.</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[13%]'>Date</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[20%]'>Customer</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[15%]'>Contact</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Value</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Outstanding</th>
-                <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[10%]'>Status</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[3%]'>#</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[13%]'>Estimate No.</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[13%]'>Date</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[20%]'>Customer</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[15%]'>Contact</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%]'>Value</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%]'>Outstanding</th>
+                <th className='border-2 border-blue-400 font-normal text-sm px-4 py-3 w-[10%]'>Status</th>
                 {/* <th className='border-2 border-blue-400 font-normal px-4 py-3 w-[5%]'>View</th> */}
 
               </tr>
             </thead>
             <tbody>
               {estimates.map((row,index) => (
-                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimate/${row.jobslug}`)}>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>{index+1}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.job_date}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.customer}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>{row.contact}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>{row.grandtotal}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>{row.grandtotal - row.advance}</td>
-                  <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
+                // <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/estimate/${row.jobslug}`)}>
+                <tr key={index+1} className='cursor-pointer' onClick={() => router.push(`/about?slug=${row.jobslug}`)}>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[5%] text-center'>{index+1}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[10%] text-center'>{row.jobno}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[10%] text-center'>{row.job_date}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[20%]'>{row.customer}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[20%]'>{row.contact}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[10%] text-right'>{row.grandtotal}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[10%] text-right'>{row.grandtotal - row.advance}</td>
+                  <td className='border-2 border-blue-400 font-normal text-sm px-4 py-2 w-[10%] text-center'>{row.job_status}</td>
                   {/* <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>
                     <Link href="" className='bg-gray-800 px-4 py-2 rounded-md hover:text-amber-400 hover:bg-gradient-to-b'>View</Link>
                   </td> */}
                 </tr>
               ))}
-              {/* <tr>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%]'>#</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[15%] text-center'>Date</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>Customer</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[20%]'>Contact</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>Value</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-right'>Outstanding</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[10%] text-center'>Status</td>
-                <td className='border-2 border-blue-400 font-normal px-4 py-2 w-[5%] text-center'>
-                  <Link href="" className='bg-gray-800 px-4 py-2 rounded-md hover:text-amber-400 hover:bg-gradient-to-b'>View</Link>
-                  </td>
-              </tr> */}
             </tbody>
           </table>
       </div>

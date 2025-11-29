@@ -25,13 +25,15 @@ function VendorComponent() {
   // const CUSTOMER_URI = "http://localhost:8000/api/vendor/all"
 
   useEffect(() => {
-    if(message) {
-      setAlert(true);
-    }
-    setTimeout(() => {
-      router.replace("/vendor")
+    if(!message) return;
+
+    setAlert(true);
+
+    const timer = setTimeout(() => {
       setAlert(false);
-    }, 3000);
+      }, 3000);
+      
+    return () => clearTimeout(timer);
   },[message])
 
 

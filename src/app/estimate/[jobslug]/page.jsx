@@ -61,7 +61,9 @@
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-export default function EstimateDetails({ params }) {
+export default function EstimateDetails() {
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
+
   const { jobslug } = useParams();
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -69,13 +71,12 @@ export default function EstimateDetails({ params }) {
 
   useEffect(() => {
     async function fetchData() {
-      console.log("HI",jobslug);
       try {
-        const res = await fetch(`http://localhost:8000/api/estimate/${jobslug}`);
+        const res = await fetch(`${BASE_URL}/estimate/${jobslug}`);
         if (!res.ok) throw new Error(`Error ${res.status}`);
         const json = await res.json();
         setJobData(json);
-        console.log(json);
+        console.log("Fetched Data: ",json);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -84,13 +85,26 @@ export default function EstimateDetails({ params }) {
     }
     // if (slug) 
     fetchData();
+    console.log("this is job data", jobData)
   }, []);
+
+  // useEffect(() => {
+  //   console.log("THIS IS JOB DATA", jobData);
+  //   // async function fetchCustomer() {
+  //   //   try {
+  //   //     const res = await fetch(`${BASE_URL}/contact/${jobData.cust_id}`)
+  //   //   } catch (error) {
+        
+  //   //   }
+  //   // }
+  // }, [])
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!jobData) return null;
 
   return (
+    
     <div className="flex justify-center py-20 px-10">
       <div
         id="estimate-pdf"
@@ -98,15 +112,15 @@ export default function EstimateDetails({ params }) {
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b pb-4 mb-6">
-          <h1 className="text-2xl font-bold">Estimate</h1>
-          <p className="text-sm text-blue-900">Date: {jobData.job_date}</p>
+          <h1 className="text-2xl text-sky-800 font-bold">Estimate</h1>
+          <p className="text-sm text-sky-800">Date: {jobData.job_date}</p>
         </div>
 
         {/* Customer & Job Info */}
         <div className="mb-6">
-          <p><span className="font-semibold">Job No:</span> {jobData.jobno}</p>
-          <p><span className="font-semibold">Customer ID:</span> {jobData.cust_id}</p>
-          <p><span className="font-semibold">Slug:</span> {jobData.slug}</p>
+          <p className='text-sky-800'><span className="font-semibold text-sky-800">Job No:</span> {jobData.jobno}</p>
+          <p className='text-sky-800'><span className="font-semibold text-sky-800">Customer ID:</span> {jobData.cust_id || jobData.un}</p>
+          <p className='text-sky-800'><span className="font-semibold text-sky-800">Slug:</span> {jobData.slug}</p>
         </div>
 
         {/* Orders Table */}

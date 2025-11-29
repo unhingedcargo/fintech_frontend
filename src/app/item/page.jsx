@@ -20,14 +20,17 @@ function ItemContent() {
   // const ITEM_URI = "http://localhost:8000/api/item/all";
 
   useEffect(() => {
-    if(message) {
-      setAlert(true);
-    }
-    setTimeout(() => {
-      router.replace("/item")
+    if(!message) return;
+    
+    setAlert(true);
+    
+    const timer = setTimeout(() => {
       setAlert(false);
-    }, 3000);
-  },[message])
+      }, 3000);
+
+    return () => clearTimeout(timer);
+
+    },[message]);
 
   useEffect(() => {
     setLoader(true);
